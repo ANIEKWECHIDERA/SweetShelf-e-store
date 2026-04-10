@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@sweetshelf/shared-ui";
 import { formatCurrency } from "@sweetshelf/shared-types";
 import { getCartTotals, useCartStore } from "@/lib/cart-store";
@@ -42,9 +42,15 @@ export default function CartPage() {
               <span className="text-xs uppercase tracking-[0.2em] text-white/68">Cart Total</span>
               <span className="text-lg font-semibold">{formatCurrency(totals.total)}</span>
             </div>
-            <Link href="/checkout" className="flex items-center justify-center transition hover:bg-white/10" aria-label="Continue to checkout">
-              <Plus className="size-6 rotate-45" />
-            </Link>
+            <button
+              type="button"
+              className="flex items-center justify-center transition hover:bg-white/10"
+              aria-label="Clear cart from summary strip"
+              onClick={() => clear()}
+              disabled={items.length === 0}
+            >
+              <X className="size-6" />
+            </button>
           </div>
 
           <Card>

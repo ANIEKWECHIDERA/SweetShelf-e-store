@@ -34,6 +34,17 @@ body {
   background: var(--color-cream);
   color: var(--color-brown-800);
   font-feature-settings: "ss01" 1, "cv01" 1;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 a,

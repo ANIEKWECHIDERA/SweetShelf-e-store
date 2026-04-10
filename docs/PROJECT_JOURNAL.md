@@ -42,6 +42,23 @@ This document tracks what was built, how it was built, and the decisions made th
 - Removed the remaining `SectionCard` wrapper usage from storefront and admin routes so the shared surface now leans on the shadcn-style card primitives consistently.
 - Standardized badge copy to reader-friendly labels such as `On Sale`, `New`, `In Stock`, and `Sold Out` instead of exposing underscored internal states in the UI.
 - Realigned the Playwright storefront smoke test with the new hero copy and cart trigger after the navigation/header redesign.
+- Made the storefront navbar sticky and moved the live cart breakdown into the header so cart status stays visible while browsing.
+- Simplified the hero back down to a single full-width content panel by removing the extra featured-product spotlight card and the duplicate cart strip from the hero area.
+- Adjusted the storefront smoke test again after the hero simplification changed the featured product from a heading into inline card content.
+- Split `Browse Menu`, `Special Offers`, and `Track Order` into dedicated storefront pages while keeping a shared storefront chrome for consistent navigation.
+- Added active-page styling in the storefront nav, a cleaner mobile menu collapse, and a cart control that stays compact until items exist and then expands with animation.
+- Reduced roundness across the shared UI primitives, increased badge background contrast, and improved the hero search styling so text remains readable against the storefront surfaces.
+- Added live product suggestions while typing in the storefront search field and forwarded searches into the dedicated menu page.
+- Hid the `Saved Items` navigation entry for signed-out users and updated the saved-items page to show an access prompt unless the demo customer session is present.
+- Restored the softer rounded styling across buttons, cards, and inputs after the sharper UI pass felt too aggressive for the pastry brand.
+- Added a hero image panel with a direct add-to-cart action and also enabled quick add-to-cart from the hero product callouts and offer cards.
+- Hid the vertical scrollbar globally in the storefront shell for a cleaner preview presentation.
+- Reworked product badges into tighter chip-style pills with stronger fills and built functional category filter buttons into the menu page.
+- Moved the storefront navigation into the shared app layout so the same sticky header now persists on catalogue, product detail, cart, checkout, and the added utility pages.
+- Restructured the hero so the cake image sits beside the introduction while the search bar and featured quick-add cards span the full hero width beneath it.
+- Tightened the product-card add-to-cart path by binding the CTA explicitly as a button action and keeping it separate from product-detail navigation.
+- Reverted the shared-layout navbar experiment back to the earlier storefront-shell navigation, hid horizontal overflow across the app, changed the cart-summary `X` control to clear the cart, and tuned badge padding/button presence after a Playwright UI review.
+- Removed the top gap above the promo strip, added empty-state placeholders for no-result menu searches and filters, surfaced cart total directly in the navbar summary, refreshed the product-card and special-offer layout toward a tighter marketplace-style arrangement, and gave product badges stronger filled backgrounds for readability.
 
 ## Commands Used For Verification
 - `npm install`
