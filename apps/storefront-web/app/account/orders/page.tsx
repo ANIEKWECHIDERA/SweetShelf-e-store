@@ -1,4 +1,4 @@
-import { SectionCard } from "@sweetshelf/shared-ui";
+import { Card, CardContent } from "@sweetshelf/shared-ui";
 import { formatCurrency, mockOrders } from "@sweetshelf/shared-types";
 
 export default function AccountOrdersPage() {
@@ -7,16 +7,18 @@ export default function AccountOrdersPage() {
       <h1 className="font-serif text-4xl text-[var(--color-brown-800)]">Purchase history</h1>
       <div className="grid gap-4">
         {mockOrders.map((order) => (
-          <SectionCard key={order.id} className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[var(--color-muted)]">{order.createdAt}</p>
-                <p className="text-lg font-medium text-[var(--color-brown-800)]">#{order.id}</p>
+          <Card key={order.id}>
+            <CardContent className="space-y-3 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-[var(--color-muted)]">{order.createdAt}</p>
+                  <p className="text-lg font-medium text-[var(--color-brown-800)]">#{order.id}</p>
+                </div>
+                <p className="text-lg font-medium text-[var(--color-caramel-500)]">{formatCurrency(order.total)}</p>
               </div>
-              <p className="text-lg font-medium text-[var(--color-caramel-500)]">{formatCurrency(order.total)}</p>
-            </div>
-            <p className="text-sm text-[var(--color-muted)]">{order.items.map((item) => item.productName).join(", ")}</p>
-          </SectionCard>
+              <p className="text-sm text-[var(--color-muted)]">{order.items.map((item) => item.productName).join(", ")}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </main>

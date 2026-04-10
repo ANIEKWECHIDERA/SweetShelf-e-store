@@ -3,16 +3,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        primary:
+        default:
           "bg-[var(--color-caramel-400)] text-white shadow-[0_14px_30px_rgba(224,153,58,0.28)] hover:bg-[var(--color-caramel-500)]",
         secondary:
+          "bg-[var(--color-brown-900)] text-white hover:bg-[var(--color-brown-800)]",
+        outline:
           "border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-800)] hover:border-[var(--color-caramel-200)] hover:bg-[var(--color-caramel-50)]",
         ghost: "bg-transparent text-[var(--color-brown-800)] hover:bg-white/70",
-        dark: "bg-[var(--color-brown-900)] text-white hover:bg-[var(--color-brown-800)]",
       },
       size: {
         default: "h-11 px-5",
@@ -25,7 +26,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "primary",
+      variant: "default",
       size: "default",
     },
   },
@@ -40,7 +41,7 @@ type ButtonProps = PropsWithChildren<
 export function Button({
   children,
   className,
-  variant = "primary",
+  variant = "default",
   size,
   fullWidth = false,
   ...props

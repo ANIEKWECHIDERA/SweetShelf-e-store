@@ -8,9 +8,16 @@ import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitl
 import { formatCurrency, mockProducts } from "@sweetshelf/shared-types";
 import { useCartStore } from "@/lib/cart-store";
 
+function getProductBadge(isOutOfStock: boolean) {
+  return isOutOfStock
+    ? { label: "Sold Out", variant: "destructive" as const }
+    : { label: "Fresh Batch", variant: "secondary" as const };
+}
+
 export function ProductDetailClient({ product }: { product: (typeof mockProducts)[number] }) {
   const addItem = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState(1);
+  const badge = getProductBadge(product.status === "out_of_stock");
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
@@ -23,10 +30,7 @@ export function ProductDetailClient({ product }: { product: (typeof mockProducts
         </div>
         <Card className="overflow-hidden bg-white/94">
           <CardHeader className="gap-3">
-            <Badge
-              label={product.status === "out_of_stock" ? "Out of stock" : "Fresh batch"}
-              variant={product.status === "out_of_stock" ? "out_of_stock" : "new"}
-            />
+            <Badge variant={badge.variant}>{badge.label}</Badge>
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">{product.categoryName}</p>
               <CardTitle className="mt-2 font-serif text-4xl font-normal">{product.name}</CardTitle>
@@ -55,15 +59,11 @@ export function ProductDetailClient({ product }: { product: (typeof mockProducts
               </button>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Button
-                fullWidth
-                disabled={product.status === "out_of_stock"}
-                onClick={() => addItem(product, quantity)}
-              >
+              <Button fullWidth disabled={product.status === "out_of_stock"} onClick={() => addItem(product, quantity)}>
                 {product.status === "out_of_stock" ? "Out of Stock" : `Add ${quantity} to Cart`}
               </Button>
               <Link href="/cart">
-                <Button fullWidth variant="secondary">
+                <Button fullWidth variant="outline">
                   Go to Cart
                 </Button>
               </Link>

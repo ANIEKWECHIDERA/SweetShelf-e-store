@@ -36,6 +36,12 @@ This document tracks what was built, how it was built, and the decisions made th
 - Added a public preview helper script `npm run dev:public` and changed app dev servers to bind on `0.0.0.0` for easier testing across devices.
 - Updated Playwright coverage to match the redesigned storefront entry flow.
 - Tightened the storefront Playwright selector so the smoke test targets the header cart link explicitly after the new `Manage Cart` entry was introduced.
+- Reworked the storefront header to follow the requested arrangement more closely: store name on the left, centered menu links, cart access on the right, and a create-account slot that swaps into a profile block when a demo signed-in session exists.
+- Replaced the older cart snapshot block with a segmented green cart summary strip inspired by the supplied reference image, and mirrored that summary treatment on the dedicated cart page.
+- Expanded the mock catalogue with more cakes, pastries, and dessert boxes so the refreshed storefront feels fuller during browsing and mobile review.
+- Removed the remaining `SectionCard` wrapper usage from storefront and admin routes so the shared surface now leans on the shadcn-style card primitives consistently.
+- Standardized badge copy to reader-friendly labels such as `On Sale`, `New`, `In Stock`, and `Sold Out` instead of exposing underscored internal states in the UI.
+- Realigned the Playwright storefront smoke test with the new hero copy and cart trigger after the navigation/header redesign.
 
 ## Commands Used For Verification
 - `npm install`

@@ -87,25 +87,37 @@ export default function CheckoutPage() {
         </CardHeader>
         <CardContent>
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <Input label="Full name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} required />
-            <Input
-              label="Email"
-              type="email"
-              helperText="We'll send your receipt here - no account needed."
-              value={customerEmail}
-              onChange={(event) => setCustomerEmail(event.target.value)}
-            />
-            <Input
-              label="Phone number"
-              value={customerPhone}
-              onChange={(event) => setCustomerPhone(event.target.value)}
-            />
-            <Input
-              label="Delivery address"
-              helperText="Leave blank if this is a pickup order."
-              value={deliveryAddress}
-              onChange={(event) => setDeliveryAddress(event.target.value)}
-            />
+            <div className="space-y-2">
+              <label htmlFor="customer-name" className="text-sm font-medium text-[var(--color-brown-800)]">
+                Full name
+              </label>
+              <Input id="customer-name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="customer-email" className="text-sm font-medium text-[var(--color-brown-800)]">
+                Email
+              </label>
+              <Input
+                id="customer-email"
+                type="email"
+                value={customerEmail}
+                onChange={(event) => setCustomerEmail(event.target.value)}
+              />
+              <p className="text-xs text-[var(--color-muted)]">We&apos;ll send your receipt here. No account needed.</p>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="customer-phone" className="text-sm font-medium text-[var(--color-brown-800)]">
+                Phone number
+              </label>
+              <Input id="customer-phone" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="delivery-address" className="text-sm font-medium text-[var(--color-brown-800)]">
+                Delivery address
+              </label>
+              <Input id="delivery-address" value={deliveryAddress} onChange={(event) => setDeliveryAddress(event.target.value)} />
+              <p className="text-xs text-[var(--color-muted)]">Leave blank if this is a pickup order.</p>
+            </div>
             {error ? <p className="text-sm text-[var(--color-rose-600)]">{error}</p> : null}
             <Button type="submit" fullWidth disabled={isSubmitting || items.length === 0}>
               {isSubmitting ? "Preparing checkout..." : "Proceed to Payment"}

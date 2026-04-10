@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Bell, CreditCard, LayoutDashboard, Package2, Settings, ShoppingBag } from "lucide-react";
-import { SectionCard } from "@sweetshelf/shared-ui";
+import { Card, CardContent } from "@sweetshelf/shared-ui";
 import { formatCurrency, mockAdminProfile, mockOrders, mockProducts } from "@sweetshelf/shared-types";
 
 const navItems = [
@@ -38,11 +38,13 @@ export function AdminShell() {
               );
             })}
           </nav>
-          <SectionCard className="bg-[var(--color-brown-900)] text-white">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/55">Signed in</p>
-            <p className="mt-2 text-lg font-medium">{mockAdminProfile.fullName}</p>
-            <p className="text-sm text-white/72">{mockAdminProfile.email}</p>
-          </SectionCard>
+          <Card className="bg-[var(--color-brown-900)] text-white">
+            <CardContent className="p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/55">Signed in</p>
+              <p className="mt-2 text-lg font-medium">{mockAdminProfile.fullName}</p>
+              <p className="text-sm text-white/72">{mockAdminProfile.email}</p>
+            </CardContent>
+          </Card>
         </div>
       </aside>
       <main className="bg-[var(--color-cream)] px-4 py-8 md:px-8">
@@ -59,20 +61,26 @@ export function AdminShell() {
           </header>
 
           <section className="grid gap-4 md:grid-cols-3">
-            <SectionCard>
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Paid Revenue</p>
-              <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">{formatCurrency(revenue)}</p>
-            </SectionCard>
-            <SectionCard>
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Products</p>
-              <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">{mockProducts.length}</p>
-            </SectionCard>
-            <SectionCard>
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Pending Fulfilment</p>
-              <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">
-                {mockOrders.filter((order) => order.status !== "delivered").length}
-              </p>
-            </SectionCard>
+            <Card>
+              <CardContent className="p-6">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Paid Revenue</p>
+                <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">{formatCurrency(revenue)}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Products</p>
+                <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">{mockProducts.length}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">Pending Fulfilment</p>
+                <p className="mt-3 font-serif text-4xl text-[var(--color-brown-800)]">
+                  {mockOrders.filter((order) => order.status !== "delivered").length}
+                </p>
+              </CardContent>
+            </Card>
           </section>
         </div>
       </main>
