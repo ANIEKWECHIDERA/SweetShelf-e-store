@@ -31,14 +31,16 @@ export default function RootLayout({
       lang="en"
       className={`${sans.variable} ${serif.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[var(--color-cream)] font-sans text-[var(--color-brown-800)]">
-        <div className="flex min-h-full flex-col">
-          {children}
+      <body className="h-screen overflow-hidden bg-[var(--color-cream)] font-sans text-[var(--color-brown-800)]">
+        <div className="flex h-full flex-col">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
+            {children}
+          </div>
           <a
             href="https://wa.me/2348012345678?text=Hi%2C+I'd+like+to+enquire+about+a+custom+order"
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 inline-flex size-14 items-center justify-center rounded-full bg-[var(--color-caramel-400)] text-white shadow-[0_18px_40px_rgba(224,153,58,0.4)]"
+            className="fixed bottom-4 right-4 inline-flex min-h-10 min-w-10 size-12 items-center justify-center rounded-full bg-[var(--color-caramel-400)] text-white shadow-[0_18px_40px_rgba(224,153,58,0.4)] sm:bottom-5 sm:right-5 sm:size-13 lg:bottom-6 lg:right-6 lg:size-14"
             aria-label="Chat on WhatsApp"
           >
             <MessageCircle className="size-6" />

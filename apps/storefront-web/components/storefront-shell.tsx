@@ -378,8 +378,8 @@ export function StorefrontShell({
     }
 
     return (
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-[var(--color-brown-100)] bg-white px-4 py-4">
-        <p className="text-sm text-[var(--color-muted)]">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-[var(--color-brown-100)] bg-white px-4 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:gap-6 lg:px-8 lg:py-6">
+        <p className="text-sm text-[var(--color-muted)] sm:text-base">
           Page{" "}
           <span className="font-semibold text-[var(--color-brown-900)]">
             {page}
@@ -548,7 +548,7 @@ export function StorefrontShell({
     }
 
     return (
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
         {list.map((product, index) => {
           const badge = getProductBadge(product);
           const isOutOfStock = product.status === "out_of_stock";
@@ -640,13 +640,13 @@ export function StorefrontShell({
   function renderPageContent() {
     if (mode === "browse") {
       return (
-        <section ref={browseListRef} className="space-y-6">
+        <section ref={browseListRef} className="space-y-4 sm:space-y-5 lg:space-y-6">
           <div className="space-y-3">
             <Badge variant="secondary">Browse Menu</Badge>
-            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">
+            <h1 className="font-serif text-xl text-[var(--color-brown-900)] sm:text-2xl lg:text-3xl">
               Everything currently on the SweetShelf menu.
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
+            <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)] sm:text-base">
               Browse by craving, celebration, or gifting mood. Search
               suggestions stay live while you type.
             </p>
@@ -687,13 +687,13 @@ export function StorefrontShell({
 
     if (mode === "offers") {
       return (
-        <section ref={offersListRef} className="space-y-6">
+        <section ref={offersListRef} className="space-y-4 sm:space-y-5 lg:space-y-6">
           <div className="space-y-3">
             <Badge variant="warning">Special Offers</Badge>
-            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">
+            <h1 className="font-serif text-xl text-[var(--color-brown-900)] sm:text-2xl lg:text-3xl">
               Current offers, bundles, and sweeter-value picks.
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
+            <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)] sm:text-base">
               These are the products with promo pricing or spotlight positioning
               right now.
             </p>
@@ -707,7 +707,7 @@ export function StorefrontShell({
 
     if (mode === "track") {
       return (
-        <section className="space-y-6">
+        <section className="space-y-4 sm:space-y-5 lg:space-y-6">
           <Card className="relative overflow-hidden border-0 bg-[radial-gradient(circle_at_top_left,rgba(252,138,6,0.28),transparent_34%),linear-gradient(135deg,#17110d_0%,#251813_48%,#36261e_100%)] text-white">
             <Image
               src="/dessert-outline.svg"
@@ -726,10 +726,10 @@ export function StorefrontShell({
                   Track Order
                 </Badge>
                 <div className="space-y-3">
-                  <h1 className="max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
+                  <h1 className="max-w-2xl font-serif text-xl leading-tight sm:text-2xl lg:text-3xl">
                     Follow your order with the same calm, premium flow.
                   </h1>
-                  <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] md:text-base">
+                  <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] sm:text-base">
                     Enter your payment reference or order ID to see the latest
                     SweetShelf status, payment state, and item breakdown.
                   </p>
@@ -763,7 +763,7 @@ export function StorefrontShell({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                     <div className="rounded-[14px] bg-[var(--color-brown-50)] p-4">
                       <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
                         Status
@@ -789,7 +789,7 @@ export function StorefrontShell({
                       </p>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                     {trackedOrder.items.map((item) => (
                       <div
                         key={item.id}
@@ -834,7 +834,7 @@ export function StorefrontShell({
               className="pointer-events-none absolute -right-10 bottom-6 opacity-20"
             />
             <CardContent className="grid gap-8 p-6 md:p-8">
-              <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-6">
                 <div className="space-y-5">
                   <Badge
                     variant="warning"
@@ -843,14 +843,14 @@ export function StorefrontShell({
                     Today&apos;s Fresh Picks
                   </Badge>
                   <div className="space-y-3">
-                    <h1 className="max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
+                    <h1 className="max-w-2xl font-serif text-xl leading-tight sm:text-2xl lg:text-3xl">
                       Dessert ordering that feels
                       <span className="text-[#ffd7a7]">
                         {" "}
                         elegant, fast, and gift-worthy.
                       </span>
                     </h1>
-                    <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] md:text-base">
+                    <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] sm:text-base">
                       SweetShelf blends custom cakes, curated pastry boxes, and
                       soft-baked favourites into one premium storefront built
                       for quick browsing on every screen.
@@ -871,7 +871,7 @@ export function StorefrontShell({
 
               {renderSearchBlock()}
 
-              <div className="space-y-4">
+              <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs uppercase tracking-[0.28em] text-[#f1d9bc]">
@@ -883,7 +883,7 @@ export function StorefrontShell({
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                   {bestSellerProducts.map((product) => (
                     <div
                       key={product.id}
@@ -929,13 +929,13 @@ export function StorefrontShell({
           </Card>
         </section>
 
-        <section className="space-y-5">
+        <section className="space-y-4 sm:space-y-5 lg:space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">
                 Browse Menu
               </p>
-              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">
+              <h2 className="mt-2 font-serif text-lg text-[var(--color-brown-900)] sm:text-xl lg:text-2xl">
                 Curated for gifting, cravings, and celebrations.
               </h2>
             </div>
@@ -947,13 +947,13 @@ export function StorefrontShell({
           {renderProductGrid(products.slice(0, 3))}
         </section>
 
-        <section className="space-y-5">
+        <section className="space-y-4 sm:space-y-5 lg:space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">
                 Special Offers
               </p>
-              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">
+              <h2 className="mt-2 font-serif text-lg text-[var(--color-brown-900)] sm:text-xl lg:text-2xl">
                 Quick-value picks worth grabbing now.
               </h2>
             </div>
@@ -968,7 +968,7 @@ export function StorefrontShell({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-8 md:px-8 md:pb-10">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:gap-6 lg:px-8 lg:py-6">
       <AnimatePresence>
         {cartNotice ? (
           <motion.div
@@ -1006,7 +1006,7 @@ export function StorefrontShell({
         </div>
       </div>
 
-      <header className="sticky top-0 z-30 rounded-[18px] border border-black/10 bg-white/95 px-4 py-4 shadow-[0_20px_60px_rgba(16,24,40,0.08)] backdrop-blur md:px-6">
+      <header className="sticky top-0 z-30 rounded-[18px] border border-black/10 bg-white/95 px-4 py-4 shadow-[0_20px_60px_rgba(16,24,40,0.08)] backdrop-blur sm:px-6 sm:py-5 lg:px-8 lg:py-6">
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/"
@@ -1105,7 +1105,7 @@ export function StorefrontShell({
 
             {customerProfile ? (
               <Link href="/account/orders">
-                <div className="flex items-center gap-3 rounded-[14px] border border-[var(--color-brown-100)] bg-[var(--color-caramel-50)] px-3 py-2 text-sm text-[var(--color-brown-900)]">
+            <div className="flex min-h-10 items-center gap-3 rounded-[14px] border border-[var(--color-brown-100)] bg-[var(--color-caramel-50)] px-3 py-2 text-sm text-[var(--color-brown-900)] sm:text-base">
                   <div className="flex size-9 items-center justify-center rounded-[12px] bg-white">
                     <UserRound className="size-4" />
                   </div>

@@ -23,13 +23,13 @@ export default function CartPage() {
   const totals = getCartTotals(items);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:gap-6 lg:px-8 lg:py-6">
+      <div className="flex flex-wrap items-end justify-between gap-4 sm:gap-5 lg:gap-6">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
             Cart
           </p>
-          <h1 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">
+          <h1 className="mt-2 font-serif text-xl text-[var(--color-brown-900)] sm:text-2xl lg:text-3xl">
             Review your order before checkout.
           </h1>
         </div>
@@ -40,8 +40,8 @@ export default function CartPage() {
         ) : null}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-6">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_360px] lg:gap-6">
+        <div className="space-y-4 sm:space-y-5 lg:space-y-6">
           <div className="grid grid-cols-[80px_1fr_1fr_64px] overflow-hidden rounded-[18px] bg-[#0d9447] text-white shadow-[0_18px_45px_rgba(13,148,71,0.22)]">
             <div className="flex items-center justify-center border-r border-white/15 px-3 py-4">
               <ShoppingBag className="size-8" />
@@ -62,7 +62,7 @@ export default function CartPage() {
             </div>
             <button
               type="button"
-              className="flex items-center justify-center transition hover:bg-white/10"
+              className="flex min-h-10 items-center justify-center transition hover:bg-white/10"
               aria-label="Clear cart from summary strip"
               onClick={() => clear()}
               disabled={items.length === 0}
@@ -72,13 +72,13 @@ export default function CartPage() {
           </div>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-5">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 rounded-[28px] border border-dashed border-[var(--color-brown-100)] px-6 py-16 text-center">
-                  <p className="text-lg font-semibold text-[var(--color-brown-900)]">
+                  <p className="text-lg font-semibold text-[var(--color-brown-900)] sm:text-xl lg:text-2xl">
                     Your cart is empty.
                   </p>
-                  <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">
+                  <p className="max-w-md text-sm leading-6 text-[var(--color-muted)] sm:text-base">
                     Add pastries from the storefront, then come back here to
                     adjust quantities or remove anything before paying.
                   </p>
@@ -87,11 +87,11 @@ export default function CartPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-5">
+                <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                   {items.map((item) => (
                     <div
                       key={item.productId}
-                      className="rounded-[24px] border border-[var(--color-brown-100)] bg-white p-4 shadow-[0_12px_32px_rgba(16,24,40,0.06)]"
+                      className="rounded-[24px] border border-[var(--color-brown-100)] bg-white p-3 shadow-[0_12px_32px_rgba(16,24,40,0.06)] sm:p-4 lg:p-5"
                     >
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                         <div className="relative size-24 overflow-hidden rounded-[20px]">
@@ -104,38 +104,31 @@ export default function CartPage() {
                           />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-lg font-semibold text-[var(--color-brown-900)]">
+                          <p className="truncate text-lg font-semibold text-[var(--color-brown-900)] sm:text-xl">
                             {item.name}
                           </p>
-                          <p className="mt-1 text-sm text-[var(--color-muted)]">
-                            {formatCurrency(item.price)} each · max{" "}
-                            {item.maxQuantity}
+                          <p className="mt-1 text-sm text-[var(--color-muted)] sm:text-base">
+                            {formatCurrency(item.price)} each · max {item.maxQuantity}
                           </p>
                           <div className="mt-4 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2 rounded-full bg-[var(--color-caramel-50)] p-1">
                               <Button
                                 type="button"
-                                className="flex size-9 items-center justify-center rounded-full bg-white"
+                                className="flex size-10 items-center justify-center rounded-full bg-white"
                                 onClick={() =>
-                                  updateQuantity(
-                                    item.productId,
-                                    item.quantity - 1,
-                                  )
+                                  updateQuantity(item.productId, item.quantity - 1)
                                 }
                               >
                                 <Minus className="size-4" />
                               </Button>
-                              <span className="min-w-10 text-center text-sm font-semibold">
+                              <span className="min-w-10 text-center text-sm font-semibold sm:text-base">
                                 {item.quantity}
                               </span>
                               <Button
                                 type="button"
-                                className="flex size-9 items-center justify-center rounded-full bg-white"
+                                className="flex size-10 items-center justify-center rounded-full bg-white"
                                 onClick={() =>
-                                  updateQuantity(
-                                    item.productId,
-                                    item.quantity + 1,
-                                  )
+                                  updateQuantity(item.productId, item.quantity + 1)
                                 }
                               >
                                 <Plus className="size-4" />
@@ -143,7 +136,7 @@ export default function CartPage() {
                             </div>
                             <button
                               type="button"
-                              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-brown-100)] px-4 py-2 text-sm text-[var(--color-brown-800)]"
+                              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--color-brown-100)] px-4 py-2 text-sm text-[var(--color-brown-800)] sm:text-base"
                               onClick={() => removeItem(item.productId)}
                             >
                               <Trash2 className="size-4 text-[var(--color-rose-600)]" />
@@ -155,7 +148,7 @@ export default function CartPage() {
                           <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
                             Line total
                           </p>
-                          <p className="mt-1 text-lg font-semibold text-[var(--color-caramel-500)]">
+                          <p className="mt-1 text-lg font-semibold text-[var(--color-caramel-500)] sm:text-xl">
                             {formatCurrency(item.price * item.quantity)}
                           </p>
                         </div>
@@ -173,14 +166,14 @@ export default function CartPage() {
             <CardDescription>Order summary</CardDescription>
             <CardTitle>{totals.itemCount} items</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between text-sm">
+          <CardContent className="space-y-4 sm:space-y-5 lg:space-y-6">
+            <div className="flex items-center justify-between text-sm sm:text-base">
               <span className="text-[var(--color-muted)]">Subtotal</span>
               <span className="font-semibold text-[var(--color-brown-900)]">
                 {formatCurrency(totals.total)}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-sm sm:text-base">
               <span className="text-[var(--color-muted)]">Delivery</span>
               <span className="font-semibold text-[var(--color-brown-900)]">
                 Calculated at checkout
@@ -188,7 +181,7 @@ export default function CartPage() {
             </div>
             <Separator />
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Estimated total</span>
+              <span className="text-sm font-medium sm:text-base">Estimated total</span>
               <span className="text-xl font-semibold text-[var(--color-caramel-500)]">
                 {formatCurrency(totals.total)}
               </span>

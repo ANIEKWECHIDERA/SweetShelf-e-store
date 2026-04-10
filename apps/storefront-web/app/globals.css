@@ -43,6 +43,11 @@ html {
   overflow-x: hidden;
 }
 
+main,
+section {
+  scroll-margin-top: 1rem;
+}
+
 body::-webkit-scrollbar {
   display: none;
 }

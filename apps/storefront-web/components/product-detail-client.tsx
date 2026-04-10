@@ -32,14 +32,14 @@ export function ProductDetailClient({
   const badge = getProductBadge(product.status === "out_of_stock");
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:gap-6 lg:px-8 lg:py-6">
       <Link
         href="/"
         className="text-sm text-[var(--color-caramel-500)] hover:underline"
       >
         ← All Products
       </Link>
-      <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_0.9fr] lg:gap-6">
         <div className="relative min-h-[420px] overflow-hidden rounded-[28px]">
           <Image
             src={product.imageUrls[0]}
@@ -56,13 +56,13 @@ export function ProductDetailClient({
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
                 {product.categoryName}
               </p>
-              <CardTitle className="mt-2 font-serif text-4xl font-normal">
+              <CardTitle className="mt-2 font-serif text-xl font-normal sm:text-2xl lg:text-3xl">
                 {product.name}
               </CardTitle>
             </div>
             <CardDescription>{product.description}</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-5">
+          <CardContent className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
             <p className="text-2xl font-semibold text-[var(--color-caramel-500)]">
               {formatCurrency(product.price)}
             </p>
@@ -91,7 +91,7 @@ export function ProductDetailClient({
                 <Plus className="size-4" />
               </Button>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
               <Button
                 fullWidth
                 disabled={product.status === "out_of_stock"}

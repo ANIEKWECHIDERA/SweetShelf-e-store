@@ -65,6 +65,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Replaced text-only image fallbacks with dessert SVG artwork, added a subtle outlined dessert backdrop to the premium hero surfaces, aligned storefront buttons back to the current shared button style, added a working search bar to the special-offers page, hid the pagination previous control on page one, hid the quantity minus control when only one item is selected, and translated the home-page visual language into the track-order experience.
 - Removed the stray `commerce-api` `rootDir` restriction that was blocking workspace type/build verification once the shared package graph was re-evaluated, so the repo returns to a clean passing state after the storefront polish.
 - Removed an outdated storefront `ignoreDeprecations` TypeScript flag that started failing Next build workers under the current toolchain, keeping the verification pipeline healthy after the latest UI pass.
+- Applied the storefront sizing system across shared primitives and key pages: standardized container padding, section spacing, responsive headings/body text, card/button padding, grid gaps, sticky header/content scrolling behavior, touch-target sizing, and persistent horizontal overflow protection across the app shell, storefront shell, cart, checkout, and product detail views.
 
 ## Commands Used For Verification
 - `npm install`
