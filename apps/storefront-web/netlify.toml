@@ -1,3 +1,6 @@
 [build]
-  command = "npm install --force && npm run build --workspace storefront-web"
+  command = "rm -rf node_modules package-lock.json && npm install && npm run build --workspace storefront-web"
   publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
