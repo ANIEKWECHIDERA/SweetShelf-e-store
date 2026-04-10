@@ -4,23 +4,11 @@
   --color-cream: #faf7f2;
   --color-brown-50: #f5ede6;
   --color-brown-100: #e8d5c4;
-  --color-brown-200: #c4a882;
-  --color-brown-600: #5c3d26;
   --color-brown-800: #3d2b1f;
   --color-brown-900: #1e1612;
   --color-caramel-50: #fdf3e3;
-  --color-caramel-100: #f9e0b0;
-  --color-caramel-200: #f5c878;
   --color-caramel-400: #e0993a;
   --color-caramel-500: #c4813a;
-  --color-caramel-600: #a6682c;
-  --color-rose-50: #fdf0ee;
-  --color-rose-100: #f9d5cf;
-  --color-rose-400: #c97d72;
-  --color-rose-600: #a85a51;
-  --color-sage-50: #eef2eb;
-  --color-sage-100: #d4e0cf;
-  --color-sage-600: #566350;
   --color-muted: #7a6e68;
 }
 
@@ -32,9 +20,4 @@
 body {
   background: var(--color-cream);
   color: var(--color-brown-800);
-}
-
-a,
-button {
-  transition: 150ms ease;
 }

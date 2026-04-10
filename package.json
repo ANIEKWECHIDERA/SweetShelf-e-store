@@ -1,24 +1,29 @@
 {
   "name": "sweetshelf",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.8.0",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test && vitest run",
+    "test:e2e": "playwright test",
+    "format:check": "prettier --check ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ANIEKWECHIDERA/SweetShelf-e-store.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/ANIEKWECHIDERA/SweetShelf-e-store/issues"
-  },
-  "homepage": "https://github.com/ANIEKWECHIDERA/SweetShelf-e-store#readme"
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^24.5.2",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
 }
