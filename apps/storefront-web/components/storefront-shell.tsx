@@ -1,11 +1,11 @@
 "use client";
 
-import { startTransition, useDeferredValue, useMemo, useState, useSyncExternalStore } from "react";
+import { startTransition, useDeferredValue, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, PackageSearch, Search, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Menu, Minus, PackageSearch, Plus, Search, ShoppingBag, Sparkles, Star, UserRound, X } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input } from "@sweetshelf/shared-ui";
 import { formatCurrency, mockCustomerProfile, mockOrders, type Category, type Product, type Profile } from "@sweetshelf/shared-types";
 import { getCartTotals, useCartStore } from "@/lib/cart-store";
@@ -28,18 +28,18 @@ function getSnapshotProfile() {
 
 function getProductBadge(product: Product) {
   if (product.status === "out_of_stock") {
-    return { label: "Sold Out", variant: "destructive" as const };
+    return { label: "Sold Out", variant: "destructive" as const, className: "bg-[#fff1f1] text-[#c2410c] before:bg-[#c2410c]" };
   }
 
   if (product.tags.includes("on_sale")) {
-    return { label: "On Sale", variant: "warning" as const };
+    return { label: "On Sale", variant: "warning" as const, className: "bg-[#fff3dc] text-[#c67d1c] before:bg-[#c67d1c]" };
   }
 
   if (product.tags.includes("new")) {
-    return { label: "New", variant: "secondary" as const };
+    return { label: "New", variant: "secondary" as const, className: "bg-[#ffe7f1] text-[#c0267d] before:bg-[#c0267d]" };
   }
 
-  return { label: "In Stock", variant: "success" as const };
+  return { label: "In Stock", variant: "success" as const, className: "bg-[#e9f7ef] text-[#157347] before:bg-[#157347]" };
 }
 
 function matchesPath(pathname: string, href: string) {
@@ -72,12 +72,16 @@ export function StorefrontShell({
   const cartTotals = getCartTotals(items);
   const customerProfile = useSyncExternalStore<Profile | null>(subscribeToCustomerProfile, getSnapshotProfile, () => null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const featuredProducts = products.slice(0, 3);
   const specialOffers = products.filter((product) => product.tags.includes("on_sale"));
   const [query, setQuery] = useState(initialQuery);
   const [trackReference, setTrackReference] = useState(initialTrackReference);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+  const [cartNotice, setCartNotice] = useState<{ productName: string; quantity: number } | null>(null);
+  const cartNoticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const deferredQuery = useDeferredValue(query);
+  const pageSize = 9;
   const navItems = useMemo(
     () => [
       { href: "/", label: "Home" },
@@ -128,6 +132,19 @@ export function StorefrontShell({
     );
   }, [trackReference]);
 
+  const bestSellerProducts = useMemo(
+    () => products.filter((product) => product.status === "in_stock").slice(0, 3),
+    [products],
+  );
+
+  const browsePageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const safeBrowsePage = Math.min(currentPage, browsePageCount);
+  const paginatedBrowseProducts = filteredProducts.slice((safeBrowsePage - 1) * pageSize, safeBrowsePage * pageSize);
+
+  const offersPageCount = Math.max(1, Math.ceil(specialOffers.length / pageSize));
+  const safeOffersPage = Math.min(currentPage, offersPageCount);
+  const paginatedOffers = specialOffers.slice((safeOffersPage - 1) * pageSize, safeOffersPage * pageSize);
+
   function pushBrowseParams(nextQuery: string, nextCategory: string) {
     const nextParams = new URLSearchParams();
     if (nextQuery.trim()) {
@@ -147,16 +164,70 @@ export function StorefrontShell({
   function handleCategorySelect(categoryId: string) {
     const nextCategory = selectedCategory === categoryId ? "" : categoryId;
     setSelectedCategory(nextCategory);
+    setCurrentPage(1);
 
     if (mode === "browse") {
       pushBrowseParams(query, nextCategory);
     }
   }
 
-  function handleQuickAdd(product: Product, event?: React.MouseEvent<HTMLButtonElement>) {
+  function getSelectedQuantity(product: Product) {
+    return selectedQuantities[product.id] ?? 1;
+  }
+
+  function updateSelectedQuantity(product: Product, nextQuantity: number) {
+    const maxQuantity = Math.max(1, product.stockQuantity || 1);
+    const safeQuantity = Math.min(maxQuantity, Math.max(1, nextQuantity));
+    setSelectedQuantities((current) => ({ ...current, [product.id]: safeQuantity }));
+  }
+
+  function triggerCartNotice(productName: string, quantity: number) {
+    if (cartNoticeTimer.current) {
+      clearTimeout(cartNoticeTimer.current);
+    }
+
+    setCartNotice({ productName, quantity });
+    cartNoticeTimer.current = setTimeout(() => {
+      setCartNotice(null);
+      cartNoticeTimer.current = null;
+    }, 2200);
+  }
+
+  function handleQuickAdd(product: Product, quantity: number, event?: React.MouseEvent<HTMLButtonElement>) {
     event?.preventDefault();
     event?.stopPropagation();
-    addItem(product);
+    addItem(product, quantity);
+    triggerCartNotice(product.name, quantity);
+  }
+
+  function handleQueryChange(nextQuery: string) {
+    setQuery(nextQuery);
+    setCurrentPage(1);
+  }
+
+  function renderPagination(page: number, pageCount: number) {
+    if (pageCount <= 1) {
+      return null;
+    }
+
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-[var(--color-brown-100)] bg-white px-4 py-4">
+        <p className="text-sm text-[var(--color-muted)]">
+          Page <span className="font-semibold text-[var(--color-brown-900)]">{page}</span> of{" "}
+          <span className="font-semibold text-[var(--color-brown-900)]">{pageCount}</span>
+        </p>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setCurrentPage((value) => Math.max(1, value - 1))} disabled={page === 1}>
+            <ChevronLeft className="size-4" />
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setCurrentPage((value) => Math.min(pageCount, value + 1))} disabled={page === pageCount}>
+            Next
+            <ChevronRight className="size-4" />
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   function renderSearchBlock() {
@@ -164,13 +235,13 @@ export function StorefrontShell({
       <div className="relative rounded-[24px] bg-white/12 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <div className="space-y-2">
-            <label htmlFor="menu-search" className="text-sm font-medium text-white">
+              <label htmlFor="menu-search" className="text-sm font-medium text-white">
               Search the menu
-            </label>
+              </label>
             <Input
               id="menu-search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => handleQueryChange(event.target.value)}
               placeholder="Try red velvet, latte, tart, pastry box..."
               className="rounded-[24px] border-white/15 bg-[#fff4e6] text-[var(--color-brown-900)] placeholder:text-[var(--color-brown-800)]"
             />
@@ -215,6 +286,45 @@ export function StorefrontShell({
     );
   }
 
+  function renderQuantityPicker(product: Product) {
+    const quantity = getSelectedQuantity(product);
+    const isOutOfStock = product.status === "out_of_stock";
+
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={`Decrease ${product.name} quantity`}
+          className="flex size-10 items-center justify-center rounded-full border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] shadow-[0_4px_10px_rgba(16,24,40,0.05)]"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            updateSelectedQuantity(product, quantity - 1);
+          }}
+          disabled={isOutOfStock || quantity <= 1}
+        >
+          <Minus className="size-4" />
+        </button>
+        <div className="flex h-10 min-w-12 items-center justify-center rounded-full bg-[var(--color-caramel-50)] px-3 text-sm font-semibold text-[var(--color-brown-900)]">
+          {quantity}
+        </div>
+        <button
+          type="button"
+          aria-label={`Increase ${product.name} quantity`}
+          className="flex size-10 items-center justify-center rounded-full border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] shadow-[0_4px_10px_rgba(16,24,40,0.05)]"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            updateSelectedQuantity(product, quantity + 1);
+          }}
+          disabled={isOutOfStock || quantity >= Math.max(1, product.stockQuantity || 1)}
+        >
+          <Plus className="size-4" />
+        </button>
+      </div>
+    );
+  }
+
   function renderProductGrid(list: Product[]) {
     if (list.length === 0) {
       return (
@@ -240,7 +350,7 @@ export function StorefrontShell({
     }
 
     return (
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {list.map((product, index) => {
           const badge = getProductBadge(product);
 
@@ -259,12 +369,12 @@ export function StorefrontShell({
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 25vw"
-                      className={`object-contain p-5 transition duration-500 ${product.status === "out_of_stock" ? "opacity-50" : "group-hover:scale-105"}`}
+                      className={`object-cover transition duration-500 ${product.status === "out_of_stock" ? "opacity-55" : "group-hover:scale-105"}`}
                     />
                     <div className="absolute left-4 top-4">
                       <Badge
                         variant={badge.variant}
-                        className="bg-white/95 shadow-[0_8px_18px_rgba(16,24,40,0.08)]"
+                        className={`shadow-[0_8px_18px_rgba(16,24,40,0.08)] ${badge.className}`}
                       >
                         {badge.label}
                       </Badge>
@@ -283,18 +393,28 @@ export function StorefrontShell({
                         <p className="text-xl font-semibold text-[var(--color-caramel-500)]">{formatCurrency(product.price)}</p>
                         <p className="text-xs text-[var(--color-sage-600)]">{product.status === "out_of_stock" ? "Currently unavailable" : "Available today"}</p>
                       </div>
+                      <div className="flex items-center gap-1 rounded-full bg-[var(--color-caramel-50)] px-2 py-1 text-[11px] text-[var(--color-brown-800)]">
+                        <Star className="size-3 fill-[var(--color-caramel-400)] text-[var(--color-caramel-400)]" />
+                        4.9
+                      </div>
                     </div>
-                    <Button
-                      type="button"
-                      onClick={(event) => handleQuickAdd(product, event)}
-                      disabled={product.status === "out_of_stock"}
-                      variant={product.status === "out_of_stock" ? "secondary" : "default"}
-                      size="sm"
-                      fullWidth
-                      className={product.status === "out_of_stock" ? "justify-center rounded-full" : "justify-center rounded-full shadow-[0_12px_24px_rgba(224,153,58,0.18)]"}
-                    >
-                      {product.status === "out_of_stock" ? "Unavailable" : "Add to Cart"}
-                    </Button>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      {renderQuantityPicker(product)}
+                      <Button
+                        type="button"
+                        onClick={(event) => handleQuickAdd(product, getSelectedQuantity(product), event)}
+                        disabled={product.status === "out_of_stock"}
+                        variant={product.status === "out_of_stock" ? "secondary" : "default"}
+                        size="sm"
+                        className={
+                          product.status === "out_of_stock"
+                            ? "justify-center rounded-full"
+                            : "justify-center rounded-full border border-[rgba(166,104,44,0.18)] shadow-[0_12px_24px_rgba(224,153,58,0.18)]"
+                        }
+                      >
+                        {product.status === "out_of_stock" ? "Unavailable" : `Add ${getSelectedQuantity(product)}`}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -344,7 +464,8 @@ export function StorefrontShell({
               </button>
             ))}
           </div>
-          {renderProductGrid(filteredProducts)}
+          {renderProductGrid(paginatedBrowseProducts)}
+          {renderPagination(safeBrowsePage, browsePageCount)}
         </section>
       );
     }
@@ -359,7 +480,8 @@ export function StorefrontShell({
               These are the products with promo pricing or spotlight positioning right now.
             </p>
           </div>
-          {renderProductGrid(specialOffers)}
+          {renderProductGrid(paginatedOffers)}
+          {renderPagination(safeOffersPage, offersPageCount)}
         </section>
       );
     }
@@ -476,23 +598,44 @@ export function StorefrontShell({
 
               {renderSearchBlock()}
 
-              <div className="grid gap-4 md:grid-cols-3">
-                {featuredProducts.map((product) => (
-                  <div key={product.id} className="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-                    <p className="text-xs uppercase tracking-[0.24em] text-[#f1d9bc]">{product.categoryName}</p>
-                    <p className="mt-2 text-lg font-semibold">{product.name}</p>
-                    <p className="mt-3 text-sm text-[#f7e7d4]">{formatCurrency(product.price)}</p>
-                    <Button
-                      type="button"
-                      size="sm"
-                      className="mt-4 min-w-[132px] justify-center border border-[rgba(255,255,255,0.12)] bg-[var(--color-caramel-400)] text-white shadow-[0_12px_24px_rgba(224,153,58,0.2)] hover:bg-[var(--color-caramel-500)]"
-                      onClick={(event) => handleQuickAdd(product, event)}
-                      disabled={product.status === "out_of_stock"}
-                    >
-                      {product.status === "out_of_stock" ? "Unavailable" : "Add to Cart"}
-                    </Button>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#f1d9bc]">Best Sellers</p>
+                    <p className="mt-2 text-lg font-semibold text-white">Customer favourites worth grabbing first.</p>
                   </div>
-                ))}
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  {bestSellerProducts.map((product) => (
+                    <div key={product.id} className="grid grid-cols-[88px_1fr] gap-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
+                      <div className="relative min-h-[104px] overflow-hidden rounded-[18px]">
+                        <Image
+                          src={product.imageUrls[0] ?? ""}
+                          alt={product.name}
+                          fill
+                          sizes="88px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs uppercase tracking-[0.24em] text-[#f1d9bc]">{product.categoryName}</p>
+                        <p className="mt-2 line-clamp-2 text-lg font-semibold">{product.name}</p>
+                        <p className="mt-2 text-sm text-[#f7e7d4]">{formatCurrency(product.price)}</p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          fullWidth
+                          className="mt-4 justify-center rounded-full border border-[rgba(166,104,44,0.18)] shadow-[0_12px_24px_rgba(224,153,58,0.18)]"
+                          onClick={(event) => handleQuickAdd(product, 1, event)}
+                          disabled={product.status === "out_of_stock"}
+                        >
+                          {product.status === "out_of_stock" ? "Unavailable" : "Add to Cart"}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -530,6 +673,29 @@ export function StorefrontShell({
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-8 md:px-8 md:pb-10">
+      <AnimatePresence>
+        {cartNotice ? (
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            className="fixed right-4 top-4 z-50 max-w-sm rounded-[20px] border border-[rgba(21,115,71,0.18)] bg-white px-4 py-4 shadow-[0_18px_45px_rgba(16,24,40,0.16)]"
+          >
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-[#e9f7ef] text-[#157347]">
+                <Check className="size-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[var(--color-brown-900)]">Added to cart</p>
+                <p className="mt-1 text-sm text-[var(--color-muted)]">
+                  {cartNotice.quantity} x {cartNotice.productName}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
       <div className="bg-[var(--color-brown-900)] -mx-4 px-4 py-3 text-[13px] text-white md:-mx-8 md:px-8">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
           <p>Fresh pastries, custom cakes, and same-day dessert drop-offs across Lagos.</p>

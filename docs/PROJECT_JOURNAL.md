@@ -59,6 +59,8 @@ This document tracks what was built, how it was built, and the decisions made th
 - Tightened the product-card add-to-cart path by binding the CTA explicitly as a button action and keeping it separate from product-detail navigation.
 - Reverted the shared-layout navbar experiment back to the earlier storefront-shell navigation, hid horizontal overflow across the app, changed the cart-summary `X` control to clear the cart, and tuned badge padding/button presence after a Playwright UI review.
 - Removed the top gap above the promo strip, added empty-state placeholders for no-result menu searches and filters, surfaced cart total directly in the navbar summary, refreshed the product-card and special-offer layout toward a tighter marketplace-style arrangement, and gave product badges stronger filled backgrounds for readability.
+- Normalized storefront product imagery to fill each card frame cleanly, added more seeded products, introduced 9-item pagination for menu-heavy views, turned the hero strip below search into a visual best-sellers section, and updated add-to-cart buttons to the softer pill-plus layout from the latest UI reference.
+- Reverted product-card purchasing back to a quantity-first flow with plus/minus controls, added an animated add-to-cart confirmation toast that only fires on the actual add action, and increased badge scale so storefront status tags are easier to scan on smaller screens.
 
 ## Commands Used For Verification
 - `npm install`
