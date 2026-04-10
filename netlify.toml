@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build:storefront"
+  command = "rm -rf node_modules package-lock.json && npm install && npm run build --workspace storefront-web"
   publish = "apps/storefront-web/.next"
 
 [build.environment]
