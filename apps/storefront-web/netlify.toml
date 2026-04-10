@@ -1,6 +1,3 @@
 [build]
   command = "npm run build --workspace storefront-web"
   publish = ".next"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"

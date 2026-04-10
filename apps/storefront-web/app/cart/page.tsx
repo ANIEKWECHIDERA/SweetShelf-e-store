@@ -71,8 +71,8 @@ export default function CartPage() {
             </button>
           </div>
 
-          <Card>
-            <CardContent className="p-3 sm:p-4 lg:p-5">
+          <Card className="border-0">
+            <CardContent className="p-3 sm:p-4 lg:p-5 border-[var(--color-brown-100)]">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 rounded-[28px] border border-dashed border-[var(--color-brown-100)] px-6 py-16 text-center">
                   <p className="text-lg font-semibold text-[var(--color-brown-900)] sm:text-xl lg:text-2xl">
@@ -87,7 +87,7 @@ export default function CartPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+                <div className="space-y-4 sm:space-y-5 lg:space-y-6 ">
                   {items.map((item) => (
                     <div
                       key={item.productId}
@@ -108,7 +108,8 @@ export default function CartPage() {
                             {item.name}
                           </p>
                           <p className="mt-1 text-sm text-[var(--color-muted)] sm:text-base">
-                            {formatCurrency(item.price)} each · max {item.maxQuantity}
+                            {formatCurrency(item.price)} each · max{" "}
+                            {item.maxQuantity}
                           </p>
                           <div className="mt-4 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2 rounded-full bg-[var(--color-caramel-50)] p-1">
@@ -116,7 +117,10 @@ export default function CartPage() {
                                 type="button"
                                 className="flex size-10 items-center justify-center rounded-full bg-white"
                                 onClick={() =>
-                                  updateQuantity(item.productId, item.quantity - 1)
+                                  updateQuantity(
+                                    item.productId,
+                                    item.quantity - 1,
+                                  )
                                 }
                               >
                                 <Minus className="size-4" />
@@ -128,7 +132,10 @@ export default function CartPage() {
                                 type="button"
                                 className="flex size-10 items-center justify-center rounded-full bg-white"
                                 onClick={() =>
-                                  updateQuantity(item.productId, item.quantity + 1)
+                                  updateQuantity(
+                                    item.productId,
+                                    item.quantity + 1,
+                                  )
                                 }
                               >
                                 <Plus className="size-4" />
@@ -161,7 +168,7 @@ export default function CartPage() {
           </Card>
         </div>
 
-        <Card className="h-fit">
+        <Card className="h-fit border-[var(--color-brown-100)] bg-white">
           <CardHeader>
             <CardDescription>Order summary</CardDescription>
             <CardTitle>{totals.itemCount} items</CardTitle>
@@ -181,17 +188,19 @@ export default function CartPage() {
             </div>
             <Separator />
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium sm:text-base">Estimated total</span>
+              <span className="text-sm font-medium sm:text-base">
+                Estimated total
+              </span>
               <span className="text-xl font-semibold text-[var(--color-caramel-500)]">
                 {formatCurrency(totals.total)}
               </span>
             </div>
-            <Link href="/checkout">
+            <Link href="/checkout" className="mb-5 mt-2 block">
               <Button fullWidth disabled={items.length === 0}>
                 Continue to Checkout
               </Button>
             </Link>
-            <Link href="/">
+            <Link href="/" className="mb-5 mt-2 block">
               <Button variant="outline" fullWidth>
                 Keep Shopping
               </Button>

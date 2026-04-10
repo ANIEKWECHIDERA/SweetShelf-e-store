@@ -39,6 +39,7 @@ import {
 } from "@sweetshelf/shared-ui";
 import {
   formatCurrency,
+  getWhatsAppHref,
   mockCustomerProfile,
   mockOrders,
   type Category,
@@ -887,7 +888,7 @@ export function StorefrontShell({
                   {bestSellerProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="grid grid-cols-[88px_1fr] gap-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-sm"
+                      className="grid grid-cols-[88px_1fr] gap-4 rounded-[24px] border border-[rgba(231,195,155,0.24)] bg-white/10 p-4 backdrop-blur-sm"
                     >
                       <div className="relative min-h-[104px] overflow-hidden rounded-[18px]">
                         <ProductImage
@@ -1187,7 +1188,7 @@ export function StorefrontShell({
           </div>
           <a
             className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-brown-900)] px-5 py-3 text-sm font-medium text-white"
-            href="https://wa.me/2348106258080?text=Hi%2C+I'd+like+to+make+a+custom+order"
+            href={getWhatsAppHref("Hi, I'd like to make a custom order")}
             target="_blank"
             rel="noopener noreferrer"
           >

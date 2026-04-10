@@ -1,6 +1,7 @@
 import { MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
+import { getWhatsAppHref } from "@sweetshelf/shared-types";
 import "./globals.css";
 
 const sans = DM_Sans({
@@ -37,7 +38,7 @@ export default function RootLayout({
             {children}
           </div>
           <a
-            href="https://wa.me/2348012345678?text=Hi%2C+I'd+like+to+enquire+about+a+custom+order"
+            href={getWhatsAppHref("Hi, I'd like to make a custom order")}
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-4 right-4 inline-flex min-h-10 min-w-10 size-12 items-center justify-center rounded-full bg-[var(--color-caramel-400)] text-white shadow-[0_18px_40px_rgba(224,153,58,0.4)] sm:bottom-5 sm:right-5 sm:size-13 lg:bottom-6 lg:right-6 lg:size-14"

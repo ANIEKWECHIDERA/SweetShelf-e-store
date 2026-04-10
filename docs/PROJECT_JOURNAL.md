@@ -66,6 +66,9 @@ This document tracks what was built, how it was built, and the decisions made th
 - Removed the stray `commerce-api` `rootDir` restriction that was blocking workspace type/build verification once the shared package graph was re-evaluated, so the repo returns to a clean passing state after the storefront polish.
 - Removed an outdated storefront `ignoreDeprecations` TypeScript flag that started failing Next build workers under the current toolchain, keeping the verification pipeline healthy after the latest UI pass.
 - Applied the storefront sizing system across shared primitives and key pages: standardized container padding, section spacing, responsive headings/body text, card/button padding, grid gaps, sticky header/content scrolling behavior, touch-target sizing, and persistent horizontal overflow protection across the app shell, storefront shell, cart, checkout, and product detail views.
+- Centralized the storefront WhatsApp number into one shared source so layout, storefront shell, product detail, and admin settings all read from the same value, and restored the best-sellers border tint without otherwise changing the current button style direction.
+- Prepared the repo for a Netlify storefront demo by adding a root `netlify.toml`, pinning Node `22`, adding targeted web build scripts, documenting the storefront/admin deployment path in `docs/NETLIFY_DEPLOYMENT.md`, and keeping the config on Netlify's current automatic Next.js/OpenNext runtime path rather than pinning a plugin version.
+- Captured the current `npm audit` finding in the Netlify deployment guide: the remaining high/critical warnings come through the local `localtunnel` preview helper and should be handled deliberately rather than force-fixed before a production security handoff.
 
 ## Commands Used For Verification
 - `npm install`
@@ -73,8 +76,11 @@ This document tracks what was built, how it was built, and the decisions made th
 - `npm run lint`
 - `npm run test`
 - `npm run build`
+- `npm run build:storefront`
+- `npm run build:admin`
 - `npm run test:e2e`
 - `npm run dev:public`
+- `npm audit --audit-level=high`
 
 ## What Is Mock-Safe vs Live-Ready
 - Mock-safe now:

@@ -460,6 +460,15 @@ export const mockCustomerProfile: Profile = {
   role: "customer",
 };
 
+export const storefrontContact = {
+  whatsappNumber: "+2348106258080",
+};
+
+export function getWhatsAppHref(message: string) {
+  const normalizedNumber = storefrontContact.whatsappNumber.replace(/[^\d]/g, "");
+  return `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(message)}`;
+}
+
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",

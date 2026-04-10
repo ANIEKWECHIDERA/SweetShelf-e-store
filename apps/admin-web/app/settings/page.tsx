@@ -1,3 +1,4 @@
+import { storefrontContact } from "@sweetshelf/shared-types";
 import { Card, CardContent, Input } from "@sweetshelf/shared-ui";
 
 export default function SettingsPage() {
@@ -16,7 +17,7 @@ export default function SettingsPage() {
             <label htmlFor="whatsapp-number" className="text-sm font-medium text-[var(--color-brown-800)]">
               WhatsApp number
             </label>
-            <Input id="whatsapp-number" defaultValue="+2348012345678" />
+            <Input id="whatsapp-number" defaultValue={storefrontContact.whatsappNumber} />
           </div>
           <div className="space-y-2">
             <label htmlFor="delivery-fee" className="text-sm font-medium text-[var(--color-brown-800)]">

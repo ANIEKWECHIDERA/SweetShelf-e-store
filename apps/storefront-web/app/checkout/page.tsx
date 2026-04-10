@@ -78,7 +78,7 @@ export default function CheckoutPage() {
           Ready to make payment?
         </h1>
       </div>
-      <Card>
+      <Card className="border p-5 sm:p-6 lg:p-8">
         <CardHeader>
           <CardDescription>Order summary</CardDescription>
           <CardTitle>Review before payment</CardTitle>
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
           </div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="border p-5 sm:p-6 lg:p-8">
         <CardHeader>
           <CardDescription>Customer details</CardDescription>
           <CardTitle>Where should we send this order?</CardTitle>

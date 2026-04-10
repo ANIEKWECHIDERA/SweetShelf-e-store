@@ -13,7 +13,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@sweetshelf/shared-ui";
-import { formatCurrency, mockProducts } from "@sweetshelf/shared-types";
+import {
+  formatCurrency,
+  getWhatsAppHref,
+  mockProducts,
+} from "@sweetshelf/shared-types";
 import { useCartStore } from "@/lib/cart-store";
 
 function getProductBadge(isOutOfStock: boolean) {
@@ -114,7 +118,7 @@ export function ProductDetailClient({
               </p>
             </div>
             <a
-              href="https://wa.me/2348012345678?text=Hi%2C+I'd+like+a+custom+version+of+this+item"
+              href={getWhatsAppHref("Hi, I'd like to make a custom order")}
               className="text-sm text-[var(--color-caramel-500)] hover:underline"
             >
               Want a custom version? Chat with us →
