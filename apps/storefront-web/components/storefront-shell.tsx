@@ -1,13 +1,50 @@
 "use client";
 
-import { startTransition, useDeferredValue, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, Menu, Minus, PackageSearch, Plus, Search, ShoppingBag, Sparkles, Star, UserRound, X } from "lucide-react";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input } from "@sweetshelf/shared-ui";
-import { formatCurrency, mockCustomerProfile, mockOrders, type Category, type Product, type Profile } from "@sweetshelf/shared-types";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  Minus,
+  PackageSearch,
+  Plus,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  UserRound,
+  X,
+} from "lucide-react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from "@sweetshelf/shared-ui";
+import {
+  formatCurrency,
+  mockCustomerProfile,
+  mockOrders,
+  type Category,
+  type Product,
+  type Profile,
+} from "@sweetshelf/shared-types";
 import { getCartTotals, useCartStore } from "@/lib/cart-store";
 
 function subscribeToCustomerProfile(onStoreChange: () => void) {
@@ -23,23 +60,41 @@ function subscribeToCustomerProfile(onStoreChange: () => void) {
 }
 
 function getSnapshotProfile() {
-  return window.localStorage.getItem("sweetshelf-demo-session") === "signed-in" ? mockCustomerProfile : null;
+  return window.localStorage.getItem("sweetshelf-demo-session") === "signed-in"
+    ? mockCustomerProfile
+    : null;
 }
 
 function getProductBadge(product: Product) {
   if (product.status === "out_of_stock") {
-    return { label: "Sold Out", variant: "destructive" as const, className: "bg-[#fff1f1] text-[#c2410c] before:bg-[#c2410c]" };
+    return {
+      label: "Sold Out",
+      variant: "destructive" as const,
+      className: "bg-[#fff1f1] text-[#c2410c] before:bg-[#c2410c]",
+    };
   }
 
   if (product.tags.includes("on_sale")) {
-    return { label: "On Sale", variant: "warning" as const, className: "bg-[#fff3dc] text-[#c67d1c] before:bg-[#c67d1c]" };
+    return {
+      label: "On Sale",
+      variant: "warning" as const,
+      className: "bg-[#fff3dc] text-[#c67d1c] before:bg-[#c67d1c]",
+    };
   }
 
   if (product.tags.includes("new")) {
-    return { label: "New", variant: "secondary" as const, className: "bg-[#ffe7f1] text-[#c0267d] before:bg-[#c0267d]" };
+    return {
+      label: "New",
+      variant: "secondary" as const,
+      className: "bg-[#ffe7f1] text-[#c0267d] before:bg-[#c0267d]",
+    };
   }
 
-  return { label: "In Stock", variant: "success" as const, className: "bg-[#e9f7ef] text-[#157347] before:bg-[#157347]" };
+  return {
+    label: "In Stock",
+    variant: "success" as const,
+    className: "bg-[#e9f7ef] text-[#157347] before:bg-[#157347]",
+  };
 }
 
 function matchesPath(pathname: string, href: string) {
@@ -48,6 +103,54 @@ function matchesPath(pathname: string, href: string) {
   }
 
   return pathname.startsWith(href);
+}
+
+function ProductImage({
+  src,
+  alt,
+  sizes,
+  className,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+  className?: string;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <>
+      {!isLoaded ? (
+        <div className="absolute inset-0 animate-pulse bg-[linear-gradient(135deg,#f6ede2_0%,#fff8ef_52%,#eadbc9_100%)]" />
+      ) : null}
+      {hasError ? (
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#f8efe4_0%,#fff9f1_100%)]">
+          <Image
+            src="/dessert-placeholder.svg"
+            alt="Dessert illustration placeholder"
+            fill
+            sizes={sizes}
+            className="object-contain p-6 opacity-90"
+          />
+        </div>
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          loading="lazy"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => {
+            setIsLoaded(true);
+            setHasError(true);
+          }}
+          className={className}
+        />
+      )}
+    </>
+  );
 }
 
 export function StorefrontShell({
@@ -70,18 +173,32 @@ export function StorefrontShell({
   const items = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
   const cartTotals = getCartTotals(items);
-  const customerProfile = useSyncExternalStore<Profile | null>(subscribeToCustomerProfile, getSnapshotProfile, () => null);
+  const customerProfile = useSyncExternalStore<Profile | null>(
+    subscribeToCustomerProfile,
+    getSnapshotProfile,
+    () => null,
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const specialOffers = products.filter((product) => product.tags.includes("on_sale"));
+  const specialOffers = products.filter((product) =>
+    product.tags.includes("on_sale"),
+  );
   const [query, setQuery] = useState(initialQuery);
   const [trackReference, setTrackReference] = useState(initialTrackReference);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
-  const [cartNotice, setCartNotice] = useState<{ productName: string; quantity: number } | null>(null);
+  const [selectedQuantities, setSelectedQuantities] = useState<
+    Record<string, number>
+  >({});
+  const [cartNotice, setCartNotice] = useState<{
+    productName: string;
+    quantity: number;
+  } | null>(null);
   const cartNoticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const browseListRef = useRef<HTMLElement | null>(null);
+  const offersListRef = useRef<HTMLElement | null>(null);
   const deferredQuery = useDeferredValue(query);
   const pageSize = 9;
+  const searchableProducts = mode === "offers" ? specialOffers : products;
   const navItems = useMemo(
     () => [
       { href: "/", label: "Home" },
@@ -99,21 +216,25 @@ export function StorefrontShell({
       return [];
     }
 
-    return products
+    return searchableProducts
       .filter((product) => {
-        const haystack = `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
+        const haystack =
+          `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
         return haystack.includes(normalized);
       })
       .slice(0, 5);
-  }, [deferredQuery, products]);
+  }, [deferredQuery, searchableProducts]);
 
   const filteredProducts = useMemo(() => {
     const normalized = deferredQuery.trim().toLowerCase();
 
     return products.filter((product) => {
-      const haystack = `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
+      const haystack =
+        `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
       const matchesQuery = normalized ? haystack.includes(normalized) : true;
-      const matchesCategory = selectedCategory ? product.categoryId === selectedCategory : true;
+      const matchesCategory = selectedCategory
+        ? product.categoryId === selectedCategory
+        : true;
       return matchesQuery && matchesCategory;
     });
   }, [deferredQuery, products, selectedCategory]);
@@ -133,17 +254,40 @@ export function StorefrontShell({
   }, [trackReference]);
 
   const bestSellerProducts = useMemo(
-    () => products.filter((product) => product.status === "in_stock").slice(0, 3),
+    () =>
+      products.filter((product) => product.status === "in_stock").slice(0, 3),
     [products],
   );
 
-  const browsePageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
-  const safeBrowsePage = Math.min(currentPage, browsePageCount);
-  const paginatedBrowseProducts = filteredProducts.slice((safeBrowsePage - 1) * pageSize, safeBrowsePage * pageSize);
+  const filteredSpecialOffers = useMemo(() => {
+    const normalized = deferredQuery.trim().toLowerCase();
 
-  const offersPageCount = Math.max(1, Math.ceil(specialOffers.length / pageSize));
+    return specialOffers.filter((product) => {
+      const haystack =
+        `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
+      return normalized ? haystack.includes(normalized) : true;
+    });
+  }, [deferredQuery, specialOffers]);
+
+  const browsePageCount = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / pageSize),
+  );
+  const safeBrowsePage = Math.min(currentPage, browsePageCount);
+  const paginatedBrowseProducts = filteredProducts.slice(
+    (safeBrowsePage - 1) * pageSize,
+    safeBrowsePage * pageSize,
+  );
+
+  const offersPageCount = Math.max(
+    1,
+    Math.ceil(filteredSpecialOffers.length / pageSize),
+  );
   const safeOffersPage = Math.min(currentPage, offersPageCount);
-  const paginatedOffers = specialOffers.slice((safeOffersPage - 1) * pageSize, safeOffersPage * pageSize);
+  const paginatedOffers = filteredSpecialOffers.slice(
+    (safeOffersPage - 1) * pageSize,
+    safeOffersPage * pageSize,
+  );
 
   function pushBrowseParams(nextQuery: string, nextCategory: string) {
     const nextParams = new URLSearchParams();
@@ -153,11 +297,15 @@ export function StorefrontShell({
     if (nextCategory) {
       nextParams.set("category", nextCategory);
     }
-    const nextHref = nextParams.size > 0 ? `/browse-menu?${nextParams.toString()}` : "/browse-menu";
+    const nextHref =
+      nextParams.size > 0
+        ? `/browse-menu?${nextParams.toString()}`
+        : "/browse-menu";
     startTransition(() => router.push(nextHref));
   }
 
   function handleExplore() {
+    setCurrentPage(1);
     pushBrowseParams(query, selectedCategory);
   }
 
@@ -178,7 +326,10 @@ export function StorefrontShell({
   function updateSelectedQuantity(product: Product, nextQuantity: number) {
     const maxQuantity = Math.max(1, product.stockQuantity || 1);
     const safeQuantity = Math.min(maxQuantity, Math.max(1, nextQuantity));
-    setSelectedQuantities((current) => ({ ...current, [product.id]: safeQuantity }));
+    setSelectedQuantities((current) => ({
+      ...current,
+      [product.id]: safeQuantity,
+    }));
   }
 
   function triggerCartNotice(productName: string, quantity: number) {
@@ -193,7 +344,11 @@ export function StorefrontShell({
     }, 2200);
   }
 
-  function handleQuickAdd(product: Product, quantity: number, event?: React.MouseEvent<HTMLButtonElement>) {
+  function handleQuickAdd(
+    product: Product,
+    quantity: number,
+    event?: React.MouseEvent<HTMLButtonElement>,
+  ) {
     event?.preventDefault();
     event?.stopPropagation();
     addItem(product, quantity);
@@ -206,6 +361,18 @@ export function StorefrontShell({
   }
 
   function renderPagination(page: number, pageCount: number) {
+    function handlePageChange(nextPage: number) {
+      setCurrentPage(nextPage);
+
+      const targetRef = mode === "offers" ? offersListRef : browseListRef;
+      requestAnimationFrame(() => {
+        targetRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    }
+
     if (pageCount <= 1) {
       return null;
     }
@@ -213,15 +380,32 @@ export function StorefrontShell({
     return (
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-[var(--color-brown-100)] bg-white px-4 py-4">
         <p className="text-sm text-[var(--color-muted)]">
-          Page <span className="font-semibold text-[var(--color-brown-900)]">{page}</span> of{" "}
-          <span className="font-semibold text-[var(--color-brown-900)]">{pageCount}</span>
+          Page{" "}
+          <span className="font-semibold text-[var(--color-brown-900)]">
+            {page}
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-[var(--color-brown-900)]">
+            {pageCount}
+          </span>
         </p>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setCurrentPage((value) => Math.max(1, value - 1))} disabled={page === 1}>
-            <ChevronLeft className="size-4" />
-            Previous
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setCurrentPage((value) => Math.min(pageCount, value + 1))} disabled={page === pageCount}>
+          {page > 1 ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(Math.max(1, page - 1))}
+            >
+              <ChevronLeft className="size-4" />
+              Previous
+            </Button>
+          ) : null}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(Math.min(pageCount, page + 1))}
+            disabled={page === pageCount}
+          >
             Next
             <ChevronRight className="size-4" />
           </Button>
@@ -235,9 +419,6 @@ export function StorefrontShell({
       <div className="relative rounded-[24px] bg-white/12 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <div className="space-y-2">
-              <label htmlFor="menu-search" className="text-sm font-medium text-white">
-              Search the menu
-              </label>
             <Input
               id="menu-search"
               value={query}
@@ -248,7 +429,7 @@ export function StorefrontShell({
           </div>
           <Button className="self-end rounded-full" onClick={handleExplore}>
             <Search className="size-4" />
-            Explore
+            Explore Menu
           </Button>
         </div>
 
@@ -269,14 +450,19 @@ export function StorefrontShell({
                   >
                     <div>
                       <p className="text-sm font-semibold">{product.name}</p>
-                      <p className="text-xs text-[var(--color-muted)]">{product.categoryName}</p>
+                      <p className="text-xs text-[var(--color-muted)]">
+                        {product.categoryName}
+                      </p>
                     </div>
-                    <span className="text-sm font-medium text-[var(--color-caramel-500)]">{formatCurrency(product.price)}</span>
+                    <span className="text-sm font-medium text-[var(--color-caramel-500)]">
+                      {formatCurrency(product.price)}
+                    </span>
                   </Link>
                 ))
               ) : (
                 <div className="rounded-[14px] px-3 py-4 text-sm text-[var(--color-muted)]">
-                  No pastries match that search yet. Try another dessert, category, or shorter keyword.
+                  No pastries match that search yet. Try another dessert,
+                  category, or shorter keyword.
                 </div>
               )}
             </motion.div>
@@ -292,19 +478,23 @@ export function StorefrontShell({
 
     return (
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-label={`Decrease ${product.name} quantity`}
-          className="flex size-10 items-center justify-center rounded-full border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] shadow-[0_4px_10px_rgba(16,24,40,0.05)]"
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            updateSelectedQuantity(product, quantity - 1);
-          }}
-          disabled={isOutOfStock || quantity <= 1}
-        >
-          <Minus className="size-4" />
-        </button>
+        {quantity > 1 ? (
+          <button
+            type="button"
+            aria-label={`Decrease ${product.name} quantity`}
+            className="flex size-10 items-center justify-center rounded-full border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] shadow-[0_4px_10px_rgba(16,24,40,0.05)]"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              updateSelectedQuantity(product, quantity - 1);
+            }}
+            disabled={isOutOfStock}
+          >
+            <Minus className="size-4" />
+          </button>
+        ) : (
+          <div className="size-10" aria-hidden="true" />
+        )}
         <div className="flex h-10 min-w-12 items-center justify-center rounded-full bg-[var(--color-caramel-50)] px-3 text-sm font-semibold text-[var(--color-brown-900)]">
           {quantity}
         </div>
@@ -317,7 +507,9 @@ export function StorefrontShell({
             event.stopPropagation();
             updateSelectedQuantity(product, quantity + 1);
           }}
-          disabled={isOutOfStock || quantity >= Math.max(1, product.stockQuantity || 1)}
+          disabled={
+            isOutOfStock || quantity >= Math.max(1, product.stockQuantity || 1)
+          }
         >
           <Plus className="size-4" />
         </button>
@@ -331,17 +523,23 @@ export function StorefrontShell({
         <Card className="border-dashed border-[var(--color-brown-100)] bg-[linear-gradient(135deg,#fffaf4_0%,#ffffff_100%)]">
           <CardContent className="flex flex-col items-center gap-3 px-6 py-14 text-center">
             <PackageSearch className="size-10 text-[var(--color-caramel-500)]" />
-            <h3 className="font-serif text-3xl text-[var(--color-brown-900)]">Nothing matches this selection yet.</h3>
+            <h3 className="font-serif text-3xl text-[var(--color-brown-900)]">
+              Nothing matches this selection yet.
+            </h3>
             <p className="max-w-xl text-sm leading-7 text-[var(--color-muted)]">
-              Try a different search phrase, switch categories, or clear the filter to see the full SweetShelf menu.
+              Try a different search phrase, switch categories, or clear the
+              filter to see the full SweetShelf menu.
             </p>
-            <Button variant="outline" onClick={() => {
-              setQuery("");
-              setSelectedCategory("");
-              if (mode === "browse") {
-                pushBrowseParams("", "");
-              }
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setQuery("");
+                setSelectedCategory("");
+                if (mode === "browse") {
+                  pushBrowseParams("", "");
+                }
+              }}
+            >
               Reset filters
             </Button>
           </CardContent>
@@ -353,6 +551,7 @@ export function StorefrontShell({
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {list.map((product, index) => {
           const badge = getProductBadge(product);
+          const isOutOfStock = product.status === "out_of_stock";
 
           return (
             <motion.article
@@ -364,10 +563,9 @@ export function StorefrontShell({
               <Card className="group flex h-full flex-col overflow-hidden border-[#ebe2d8] bg-white shadow-[0_14px_34px_rgba(16,24,40,0.06)]">
                 <Link href={`/products/${product.slug}`} className="group">
                   <div className="relative aspect-[4/3] overflow-hidden border-b border-[#f1e8de] bg-[#fffaf4]">
-                    <Image
+                    <ProductImage
                       src={product.imageUrls[0] ?? ""}
                       alt={product.name}
-                      fill
                       sizes="(max-width: 768px) 100vw, 25vw"
                       className={`object-cover transition duration-500 ${product.status === "out_of_stock" ? "opacity-55" : "group-hover:scale-105"}`}
                     />
@@ -383,38 +581,52 @@ export function StorefrontShell({
                 </Link>
                 <CardContent className="flex flex-1 flex-col gap-4 p-5">
                   <div className="space-y-2">
-                    <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">{product.categoryName}</p>
-                    <h3 className="line-clamp-2 min-h-[3.5rem] text-base font-semibold leading-7 text-[var(--color-brown-900)]">{product.name}</h3>
-                    <p className="line-clamp-2 text-sm leading-6 text-[var(--color-muted)]">{product.description}</p>
+                    <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">
+                      {product.categoryName}
+                    </p>
+                    <h3 className="line-clamp-2 min-h-[3.5rem] text-base font-semibold leading-7 text-[var(--color-brown-900)]">
+                      {product.name}
+                    </h3>
+                    <p className="line-clamp-2 text-sm leading-6 text-[var(--color-muted)]">
+                      {product.description}
+                    </p>
                   </div>
                   <div className="mt-auto space-y-4">
                     <div className="flex items-end justify-between gap-4">
                       <div>
-                        <p className="text-xl font-semibold text-[var(--color-caramel-500)]">{formatCurrency(product.price)}</p>
-                        <p className="text-xs text-[var(--color-sage-600)]">{product.status === "out_of_stock" ? "Currently unavailable" : "Available today"}</p>
+                        <p className="text-xl font-semibold text-[var(--color-caramel-500)]">
+                          {formatCurrency(product.price)}
+                        </p>
+                        <p className="text-xs text-[var(--color-sage-600)]">
+                          {isOutOfStock
+                            ? "Currently unavailable"
+                            : "Available today"}
+                        </p>
                       </div>
                       <div className="flex items-center gap-1 rounded-full bg-[var(--color-caramel-50)] px-2 py-1 text-[11px] text-[var(--color-brown-800)]">
                         <Star className="size-3 fill-[var(--color-caramel-400)] text-[var(--color-caramel-400)]" />
                         4.9
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      {renderQuantityPicker(product)}
-                      <Button
-                        type="button"
-                        onClick={(event) => handleQuickAdd(product, getSelectedQuantity(product), event)}
-                        disabled={product.status === "out_of_stock"}
-                        variant={product.status === "out_of_stock" ? "secondary" : "default"}
-                        size="sm"
-                        className={
-                          product.status === "out_of_stock"
-                            ? "justify-center rounded-full"
-                            : "justify-center rounded-full border border-[rgba(166,104,44,0.18)] shadow-[0_12px_24px_rgba(224,153,58,0.18)]"
-                        }
-                      >
-                        {product.status === "out_of_stock" ? "Unavailable" : `Add ${getSelectedQuantity(product)}`}
-                      </Button>
-                    </div>
+                    {!isOutOfStock ? (
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        {renderQuantityPicker(product)}
+                        <Button
+                          type="button"
+                          onClick={(event) =>
+                            handleQuickAdd(
+                              product,
+                              getSelectedQuantity(product),
+                              event,
+                            )
+                          }
+                          size="sm"
+                          className="justify-center rounded-full p-2 w-1/2"
+                        >
+                          {`Add ${getSelectedQuantity(product)}`}
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
                 </CardContent>
               </Card>
@@ -428,12 +640,15 @@ export function StorefrontShell({
   function renderPageContent() {
     if (mode === "browse") {
       return (
-        <section className="space-y-6">
+        <section ref={browseListRef} className="space-y-6">
           <div className="space-y-3">
             <Badge variant="secondary">Browse Menu</Badge>
-            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">Everything currently on the SweetShelf menu.</h1>
+            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">
+              Everything currently on the SweetShelf menu.
+            </h1>
             <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
-              Browse by craving, celebration, or gifting mood. Search suggestions stay live while you type.
+              Browse by craving, celebration, or gifting mood. Search
+              suggestions stay live while you type.
             </p>
           </div>
           {renderSearchBlock()}
@@ -472,14 +687,18 @@ export function StorefrontShell({
 
     if (mode === "offers") {
       return (
-        <section className="space-y-6">
+        <section ref={offersListRef} className="space-y-6">
           <div className="space-y-3">
             <Badge variant="warning">Special Offers</Badge>
-            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">Current offers, bundles, and sweeter-value picks.</h1>
+            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">
+              Current offers, bundles, and sweeter-value picks.
+            </h1>
             <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
-              These are the products with promo pricing or spotlight positioning right now.
+              These are the products with promo pricing or spotlight positioning
+              right now.
             </p>
           </div>
+          {renderSearchBlock()}
           {renderProductGrid(paginatedOffers)}
           {renderPagination(safeOffersPage, offersPageCount)}
         </section>
@@ -489,59 +708,96 @@ export function StorefrontShell({
     if (mode === "track") {
       return (
         <section className="space-y-6">
-          <div className="space-y-3">
-            <Badge variant="secondary">Track Order</Badge>
-            <h1 className="font-serif text-4xl text-[var(--color-brown-900)] md:text-5xl">Find the latest status for your SweetShelf order.</h1>
-            <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
-              Enter your payment reference or order ID. This mock-safe version uses the seeded order record for now.
-            </p>
-          </div>
-          <Card className="bg-[linear-gradient(135deg,#fff7ee 0%,#fff 100%)]">
-            <CardContent className="grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-end">
-              <div className="space-y-2">
-                <label htmlFor="track-reference" className="text-sm font-medium text-[var(--color-brown-900)]">
-                  Payment reference or order ID
-                </label>
-                <Input
-                  id="track-reference"
-                  value={trackReference}
-                  onChange={(event) => setTrackReference(event.target.value)}
-                  placeholder="Try pay_demo_001 or order-demo-001"
-                  className="bg-white text-[var(--color-brown-900)]"
-                />
+          <Card className="relative overflow-hidden border-0 bg-[radial-gradient(circle_at_top_left,rgba(252,138,6,0.28),transparent_34%),linear-gradient(135deg,#17110d_0%,#251813_48%,#36261e_100%)] text-white">
+            <Image
+              src="/dessert-outline.svg"
+              alt=""
+              width={280}
+              height={280}
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-8 top-8 opacity-25"
+            />
+            <CardContent className="relative grid gap-8 p-6 md:p-8">
+              <div className="space-y-4">
+                <Badge
+                  variant="warning"
+                  className="border-[rgba(255,255,255,0.1)] bg-[#ffe2b9] text-[#3c2513] before:bg-[#7e4d14]"
+                >
+                  Track Order
+                </Badge>
+                <div className="space-y-3">
+                  <h1 className="max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
+                    Follow your order with the same calm, premium flow.
+                  </h1>
+                  <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] md:text-base">
+                    Enter your payment reference or order ID to see the latest
+                    SweetShelf status, payment state, and item breakdown.
+                  </p>
+                </div>
               </div>
-              <Button variant="secondary" className="rounded-full">
-                <PackageSearch className="size-4" />
-                Track
-              </Button>
+
+              <div className="rounded-[24px] bg-white/12 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+                  <Input
+                    id="track-reference"
+                    value={trackReference}
+                    onChange={(event) => setTrackReference(event.target.value)}
+                    placeholder="Try pay_demo_001 or order-demo-001"
+                    className="rounded-[24px] border-white/15 bg-[#fff4e6] text-[var(--color-brown-900)] placeholder:text-[var(--color-brown-800)]"
+                  />
+                  <Button>
+                    <PackageSearch className="size-4" />
+                    Track Order
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
           {trackReference.trim() ? (
             trackedOrder ? (
-              <Card>
+              <Card className="overflow-hidden border-0 bg-[linear-gradient(135deg,#fff7ee_0%,#fff_100%)]">
                 <CardHeader>
                   <CardDescription>Order located</CardDescription>
-                  <CardTitle className="font-serif text-3xl font-normal">#{trackedOrder.id}</CardTitle>
+                  <CardTitle className="font-serif text-3xl font-normal">
+                    #{trackedOrder.id}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid gap-3 md:grid-cols-3">
                     <div className="rounded-[14px] bg-[var(--color-brown-50)] p-4">
-                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">Status</p>
-                      <p className="mt-2 text-base font-semibold capitalize text-[var(--color-brown-900)]">{trackedOrder.status}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+                        Status
+                      </p>
+                      <p className="mt-2 text-base font-semibold capitalize text-[var(--color-brown-900)]">
+                        {trackedOrder.status}
+                      </p>
                     </div>
                     <div className="rounded-[14px] bg-[var(--color-brown-50)] p-4">
-                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">Payment</p>
-                      <p className="mt-2 text-base font-semibold capitalize text-[var(--color-brown-900)]">{trackedOrder.paymentStatus}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+                        Payment
+                      </p>
+                      <p className="mt-2 text-base font-semibold capitalize text-[var(--color-brown-900)]">
+                        {trackedOrder.paymentStatus}
+                      </p>
                     </div>
                     <div className="rounded-[14px] bg-[var(--color-brown-50)] p-4">
-                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">Total</p>
-                      <p className="mt-2 text-base font-semibold text-[var(--color-brown-900)]">{formatCurrency(trackedOrder.total)}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+                        Total
+                      </p>
+                      <p className="mt-2 text-base font-semibold text-[var(--color-brown-900)]">
+                        {formatCurrency(trackedOrder.total)}
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-3">
                     {trackedOrder.items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between text-sm">
-                        <span>{item.productName} x {item.quantity}</span>
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span>
+                          {item.productName} x {item.quantity}
+                        </span>
                         <span>{formatCurrency(item.subtotal)}</span>
                       </div>
                     ))}
@@ -549,9 +805,10 @@ export function StorefrontShell({
                 </CardContent>
               </Card>
             ) : (
-              <Card>
+              <Card className="overflow-hidden border-0 bg-[linear-gradient(135deg,#fff7ee_0%,#fff_100%)]">
                 <CardContent className="p-6 text-sm text-[var(--color-muted)]">
-                  No order matched that reference yet. Try the seeded demo value `pay_demo_001`.
+                  No order matched that reference yet. Try the seeded demo value
+                  `pay_demo_001`.
                 </CardContent>
               </Card>
             )
@@ -560,35 +817,51 @@ export function StorefrontShell({
       );
     }
 
-    const heroImageProduct = products.find((product) => product.categoryId === "cat-cakes") ?? products[0];
+    const heroImageProduct =
+      products.find((product) => product.categoryId === "cat-cakes") ??
+      products[0];
 
     return (
       <>
         <section>
-          <Card className="overflow-hidden border-0 bg-[radial-gradient(circle_at_top_left,rgba(252,138,6,0.32),transparent_34%),linear-gradient(135deg,#17110d_0%,#251813_48%,#36261e_100%)] text-white">
+          <Card className="relative overflow-hidden border-0 bg-[radial-gradient(circle_at_top_left,rgba(252,138,6,0.32),transparent_34%),linear-gradient(135deg,#17110d_0%,#251813_48%,#36261e_100%)] text-white">
+            <Image
+              src="/dessert-outline.svg"
+              alt=""
+              width={320}
+              height={320}
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-10 bottom-6 opacity-20"
+            />
             <CardContent className="grid gap-8 p-6 md:p-8">
               <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
                 <div className="space-y-5">
-                  <Badge variant="warning" className="border-[rgba(255,255,255,0.1)] bg-[#ffe2b9] text-[#3c2513] before:bg-[#7e4d14]">
+                  <Badge
+                    variant="warning"
+                    className="border-[rgba(255,255,255,0.1)] bg-[#ffe2b9] text-[#3c2513] before:bg-[#7e4d14]"
+                  >
                     Today&apos;s Fresh Picks
                   </Badge>
                   <div className="space-y-3">
                     <h1 className="max-w-2xl font-serif text-4xl leading-tight md:text-6xl">
                       Dessert ordering that feels
-                      <span className="text-[#ffd7a7]"> elegant, fast, and gift-worthy.</span>
+                      <span className="text-[#ffd7a7]">
+                        {" "}
+                        elegant, fast, and gift-worthy.
+                      </span>
                     </h1>
                     <p className="max-w-2xl text-sm leading-7 text-[#f7e7d4] md:text-base">
-                      SweetShelf blends custom cakes, curated pastry boxes, and soft-baked favourites into one premium
-                      storefront built for quick browsing on every screen.
+                      SweetShelf blends custom cakes, curated pastry boxes, and
+                      soft-baked favourites into one premium storefront built
+                      for quick browsing on every screen.
                     </p>
                   </div>
                 </div>
 
                 <div className="relative min-h-[340px] overflow-hidden rounded-[28px] border border-white/10 shadow-[0_24px_60px_rgba(16,24,40,0.18)]">
-                  <Image
+                  <ProductImage
                     src={heroImageProduct.imageUrls[0] ?? ""}
                     alt={heroImageProduct.name}
-                    fill
                     sizes="(max-width: 1024px) 100vw, 42vw"
                     className="object-cover"
                   />
@@ -601,37 +874,52 @@ export function StorefrontShell({
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-[#f1d9bc]">Best Sellers</p>
-                    <p className="mt-2 text-lg font-semibold text-white">Customer favourites worth grabbing first.</p>
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#f1d9bc]">
+                      Best Sellers
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-white">
+                      Customer favourites worth grabbing first.
+                    </p>
                   </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
                   {bestSellerProducts.map((product) => (
-                    <div key={product.id} className="grid grid-cols-[88px_1fr] gap-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
+                    <div
+                      key={product.id}
+                      className="grid grid-cols-[88px_1fr] gap-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-sm"
+                    >
                       <div className="relative min-h-[104px] overflow-hidden rounded-[18px]">
-                        <Image
+                        <ProductImage
                           src={product.imageUrls[0] ?? ""}
                           alt={product.name}
-                          fill
                           sizes="88px"
                           className="object-cover"
                         />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs uppercase tracking-[0.24em] text-[#f1d9bc]">{product.categoryName}</p>
-                        <p className="mt-2 line-clamp-2 text-lg font-semibold">{product.name}</p>
-                        <p className="mt-2 text-sm text-[#f7e7d4]">{formatCurrency(product.price)}</p>
-                        <Button
-                          type="button"
-                          size="sm"
-                          fullWidth
-                          className="mt-4 justify-center rounded-full border border-[rgba(166,104,44,0.18)] shadow-[0_12px_24px_rgba(224,153,58,0.18)]"
-                          onClick={(event) => handleQuickAdd(product, 1, event)}
-                          disabled={product.status === "out_of_stock"}
-                        >
-                          {product.status === "out_of_stock" ? "Unavailable" : "Add to Cart"}
-                        </Button>
+                        <p className="text-xs uppercase tracking-[0.24em] text-[#f1d9bc]">
+                          {product.categoryName}
+                        </p>
+                        <p className="mt-2 truncate text-lg font-semibold">
+                          {product.name}
+                        </p>
+                        <p className="mt-2 text-sm text-[#f7e7d4]">
+                          {formatCurrency(product.price)}
+                        </p>
+                        {product.status !== "out_of_stock" ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            fullWidth
+                            className="mt-4 justify-center text-center align-middle rounded-full py-2"
+                            onClick={(event) =>
+                              handleQuickAdd(product, 1, event)
+                            }
+                          >
+                            Add to Cart
+                          </Button>
+                        ) : null}
                       </div>
                     </div>
                   ))}
@@ -644,28 +932,36 @@ export function StorefrontShell({
         <section className="space-y-5">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">Browse Menu</p>
-              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">Curated for gifting, cravings, and celebrations.</h2>
+              <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">
+                Browse Menu
+              </p>
+              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">
+                Curated for gifting, cravings, and celebrations.
+              </h2>
             </div>
             <Link href="/browse-menu">
               <Button variant="outline">Open Full Menu</Button>
             </Link>
           </div>
 
-          {renderProductGrid(products.slice(0, 4))}
+          {renderProductGrid(products.slice(0, 3))}
         </section>
 
         <section className="space-y-5">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">Special Offers</p>
-              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">Quick-value picks worth grabbing now.</h2>
+              <p className="text-xs uppercase tracking-[0.32em] text-[var(--color-muted)]">
+                Special Offers
+              </p>
+              <h2 className="mt-2 font-serif text-4xl text-[var(--color-brown-900)]">
+                Quick-value picks worth grabbing now.
+              </h2>
             </div>
             <Link href="/special-offers">
               <Button variant="outline">See Offers</Button>
             </Link>
           </div>
-          {renderProductGrid(specialOffers.slice(0, 4))}
+          {renderProductGrid(specialOffers.slice(0, 3))}
         </section>
       </>
     );
@@ -686,7 +982,9 @@ export function StorefrontShell({
                 <Check className="size-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-[var(--color-brown-900)]">Added to cart</p>
+                <p className="text-sm font-semibold text-[var(--color-brown-900)]">
+                  Added to cart
+                </p>
                 <p className="mt-1 text-sm text-[var(--color-muted)]">
                   {cartNotice.quantity} x {cartNotice.productName}
                 </p>
@@ -698,14 +996,22 @@ export function StorefrontShell({
 
       <div className="bg-[var(--color-brown-900)] -mx-4 px-4 py-3 text-[13px] text-white md:-mx-8 md:px-8">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
-          <p>Fresh pastries, custom cakes, and same-day dessert drop-offs across Lagos.</p>
-          <p className="text-[var(--color-caramel-200)]">Special offer: free drink pairing on boxes above NGN 18,000.</p>
+          <p>
+            Fresh pastries, custom cakes, and same-day dessert drop-offs across
+            Lagos.
+          </p>
+          <p className="text-[var(--color-caramel-200)]">
+            Special offer: free drink pairing on boxes above NGN 18,000.
+          </p>
         </div>
       </div>
 
       <header className="sticky top-0 z-30 rounded-[18px] border border-black/10 bg-white/95 px-4 py-4 shadow-[0_20px_60px_rgba(16,24,40,0.08)] backdrop-blur md:px-6">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="font-serif text-3xl italic text-[var(--color-brown-900)]">
+          <Link
+            href="/"
+            className="font-serif text-3xl italic text-[var(--color-brown-900)]"
+          >
             SweetShelf
           </Link>
 
@@ -738,7 +1044,10 @@ export function StorefrontShell({
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <motion.div layout transition={{ type: "spring", stiffness: 240, damping: 22 }}>
+            <motion.div
+              layout
+              transition={{ type: "spring", stiffness: 240, damping: 22 }}
+            >
               <AnimatePresence mode="wait" initial={false}>
                 {items.length > 0 ? (
                   <motion.div
@@ -756,19 +1065,36 @@ export function StorefrontShell({
                         <ShoppingBag className="size-5" />
                       </div>
                       <div className="flex min-w-[84px] flex-col justify-center border-r border-white/15 px-3 py-2">
-                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">Items</span>
-                        <span className="text-sm font-semibold">{items.length}</span>
+                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">
+                          Items
+                        </span>
+                        <span className="text-sm font-semibold">
+                          {items.length}
+                        </span>
                       </div>
                       <div className="flex min-w-[100px] flex-col justify-center px-3 py-2">
-                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">Total</span>
-                        <span className="text-sm font-semibold">{formatCurrency(cartTotals.total)}</span>
+                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/70">
+                          Total
+                        </span>
+                        <span className="text-sm font-semibold">
+                          {formatCurrency(cartTotals.total)}
+                        </span>
                       </div>
                     </Link>
                   </motion.div>
                 ) : (
-                  <motion.div key="cart-icon" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <motion.div
+                    key="cart-icon"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
                     <Link href="/cart">
-                      <Button variant="outline" size="icon" aria-label="Open cart">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        aria-label="Open cart"
+                      >
                         <ShoppingBag className="size-4" />
                       </Button>
                     </Link>
@@ -798,11 +1124,19 @@ export function StorefrontShell({
 
           <button
             type="button"
-            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              isMobileMenuOpen
+                ? "Close navigation menu"
+                : "Open navigation menu"
+            }
             className="inline-flex size-11 items-center justify-center rounded-[14px] border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] lg:hidden"
             onClick={() => setIsMobileMenuOpen((current) => !current)}
           >
-            {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {isMobileMenuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </button>
         </div>
 
@@ -842,7 +1176,9 @@ export function StorefrontShell({
       <Card className="border-0 bg-[linear-gradient(135deg,#fff6e8_0%,#fff 100%)]">
         <CardHeader>
           <CardDescription>Need a custom cake or event order?</CardDescription>
-          <CardTitle className="font-serif text-3xl font-normal">Keep WhatsApp open for the final handoff.</CardTitle>
+          <CardTitle className="font-serif text-3xl font-normal">
+            You can reach out to us on WhatsApp.
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-sm text-[var(--color-brown-800)]">
@@ -851,9 +1187,9 @@ export function StorefrontShell({
           </div>
           <a
             className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-brown-900)] px-5 py-3 text-sm font-medium text-white"
-            href="https://wa.me/2348012345678?text=Hi%2C+I'd+like+to+enquire+about+a+custom+order"
+            href="https://wa.me/2348106258080?text=Hi%2C+I'd+like+to+make+a+custom+order"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             Chat on WhatsApp
             <Sparkles className="size-4" />
