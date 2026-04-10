@@ -69,6 +69,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Centralized the storefront WhatsApp number into one shared source so layout, storefront shell, product detail, and admin settings all read from the same value, and restored the best-sellers border tint without otherwise changing the current button style direction.
 - Prepared the repo for a Netlify storefront demo by adding a root `netlify.toml`, pinning Node `22`, adding targeted web build scripts, documenting the storefront/admin deployment path in `docs/NETLIFY_DEPLOYMENT.md`, and keeping the config on Netlify's current automatic Next.js/OpenNext runtime path rather than pinning a plugin version.
 - Captured the current `npm audit` finding in the Netlify deployment guide: the remaining high/critical warnings come through the local `localtunnel` preview helper and should be handled deliberately rather than force-fixed before a production security handoff.
+- Fixed the Netlify deploy failure by removing the unsupported Next 16 `next build --no-turbo` flag, replacing the destructive Netlify install command with the root workspace build scripts, pinning app-level Netlify configs to Node `22`, and making app-level publish paths explicit for monorepo deploys.
 
 ## Commands Used For Verification
 - `npm install`

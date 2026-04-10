@@ -27,6 +27,16 @@ Use this setup when creating the main public demo site in Netlify.
 7. Add environment variables for the demo.
 8. Deploy the site.
 
+If Netlify is already configured and failing, check these UI settings:
+
+- Build command: `npm run build:storefront`
+- Publish directory: `apps/storefront-web/.next`
+- Package directory: leave blank unless you intentionally want app-level config
+- Base directory: repository root
+- Node version: `22`
+- Do not use build commands that delete `node_modules` or `package-lock.json`; Netlify already installs dependencies before running the build command.
+- Do not use `next build --no-turbo`; Next.js 16 supports `next build`, `next build --turbo`, and `next build --webpack`, but not `--no-turbo`.
+
 ## Admin Demo Site
 
 For a separate admin demo, create a second Netlify site from the same repository.
