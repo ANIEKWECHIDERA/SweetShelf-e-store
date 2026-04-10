@@ -72,6 +72,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Fixed the Netlify deploy failure by removing the unsupported Next 16 `next build --no-turbo` flag, replacing the destructive Netlify install command with the root workspace build scripts, pinning app-level Netlify configs to Node `22`, and making app-level publish paths explicit for monorepo deploys.
 - Hardened the Netlify Linux build after a Lightning CSS native-binary failure by pinning `lightningcss` at the workspace root, locking the `lightningcss-linux-x64-gnu` optional package for the Next apps, and documenting the package-directory setting that can make Netlify prefer app-level config.
 - Hardened the Netlify Tailwind 4 build after an Oxide native-binary failure by locking `@tailwindcss/oxide-linux-x64-gnu` for both Next apps and documenting the old UI-installed Netlify Next plugin warning shown in deploy logs.
+- Removed SPA-style `_redirects` fallbacks from the storefront and admin public folders after the Netlify deploy served a 404 from `/`; Next.js on Netlify should let the Next runtime own route handling instead of rewriting every path to `/index.html`.
 
 ## Commands Used For Verification
 - `npm install`

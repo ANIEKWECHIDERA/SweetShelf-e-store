@@ -39,6 +39,7 @@ If Netlify is already configured and failing, check these UI settings:
 - If the build fails with `Cannot find module '../lightningcss.linux-x64-gnu.node'`, make sure the latest lockfile is deployed. The repo now pins `lightningcss` at the workspace root and records the Linux native optional package so Netlify can install the CSS binary needed by Tailwind/Next builds.
 - If the build fails with `Cannot find module '@tailwindcss/oxide-linux-x64-gnu'`, make sure the latest lockfile is deployed. The repo now records Tailwind Oxide's Linux native optional package for both Next apps so Netlify can install the Tailwind 4 CSS engine binary.
 - The deploy log may show an old UI-installed `@netlify/plugin-nextjs` version. If it does, update it from Netlify's plugin UI or remove the UI-installed plugin and let Netlify's current Next.js runtime detection handle the app.
+- Do not add a SPA fallback `_redirects` file like `/* /index.html 200` to a Next.js app. That rewrite is for static SPA builds and can make the deployed Next app return a public 404 because there is no root `index.html` in a server-rendered `.next` deployment.
 
 ## Admin Demo Site
 
