@@ -11,6 +11,7 @@
   --color-caramel-50: #fdf3e3;
   --color-caramel-100: #f9e0b0;
   --color-caramel-200: #f5c878;
+  --color-caramel-300: #f3b965;
   --color-caramel-400: #e0993a;
   --color-caramel-500: #c4813a;
   --color-caramel-600: #a6682c;
@@ -32,9 +33,14 @@
 body {
   background: var(--color-cream);
   color: var(--color-brown-800);
+  font-feature-settings: "ss01" 1, "cv01" 1;
 }
 
 a,
 button {
   transition: 150ms ease;
+}
+
+::selection {
+  background: rgba(224, 153, 58, 0.18);
 }

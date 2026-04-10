@@ -27,6 +27,16 @@ This document tracks what was built, how it was built, and the decisions made th
 - Added unit coverage for checkout schema utilities, cart totals, and webhook signature generation.
 - Added a Playwright smoke test for storefront navigation and verified it passes locally.
 
+### 2026-04-10
+- Refreshed the storefront visual system using shadcn-inspired component patterns after reviewing the referenced food-delivery Figma layout.
+- Updated shared UI primitives toward shadcn-style `button`, `badge`, `card`, `input`, and `separator` behavior while keeping SweetShelf brand tokens.
+- Redesigned the storefront home page with a brighter promo bar, richer hero, more app-like merchandising cards, and stronger cart entry points.
+- Added a dedicated `/cart` page where customers can increase quantity, decrease quantity, remove individual items, or clear the cart entirely.
+- Upgraded the product detail flow so quantity selection works before adding to cart, with a direct path into the cart page.
+- Added a public preview helper script `npm run dev:public` and changed app dev servers to bind on `0.0.0.0` for easier testing across devices.
+- Updated Playwright coverage to match the redesigned storefront entry flow.
+- Tightened the storefront Playwright selector so the smoke test targets the header cart link explicitly after the new `Manage Cart` entry was introduced.
+
 ## Commands Used For Verification
 - `npm install`
 - `npm run typecheck`
@@ -34,11 +44,13 @@ This document tracks what was built, how it was built, and the decisions made th
 - `npm run test`
 - `npm run build`
 - `npm run test:e2e`
+- `npm run dev:public`
 
 ## What Is Mock-Safe vs Live-Ready
 - Mock-safe now:
   - Catalogue rendering
   - Cart persistence
+  - Cart management page with quantity updates and item removal
   - Checkout redirect flow
   - Order success rendering
   - Admin dashboard routes

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { clsx } from "clsx";
+import { cn } from "../cn";
 
 export function SectionCard({
   children,
@@ -7,8 +7,8 @@ export function SectionCard({
 }: PropsWithChildren<{ className?: string }>) {
   return (
     <div
-      className={clsx(
-        "rounded-[24px] border border-[var(--color-brown-100)] bg-white p-5 shadow-[0_4px_24px_rgba(61,43,31,0.08)]",
+      className={cn(
+        "rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-[0_18px_60px_rgba(16,24,40,0.08)] backdrop-blur-sm",
         className,
       )}
     >

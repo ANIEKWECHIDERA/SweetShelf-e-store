@@ -1,3 +1,4 @@
+import { MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
@@ -37,9 +38,10 @@ export default function RootLayout({
             href="https://wa.me/2348012345678?text=Hi%2C+I'd+like+to+enquire+about+a+custom+order"
             target="_blank"
             rel="noreferrer"
-            className="fixed bottom-6 right-6 inline-flex size-14 items-center justify-center rounded-full bg-[var(--color-caramel-400)] text-white shadow-lg"
+            className="fixed bottom-6 right-6 inline-flex size-14 items-center justify-center rounded-full bg-[var(--color-caramel-400)] text-white shadow-[0_18px_40px_rgba(224,153,58,0.4)]"
+            aria-label="Chat on WhatsApp"
           >
-            WA
+            <MessageCircle className="size-6" />
           </a>
         </div>
       </body>

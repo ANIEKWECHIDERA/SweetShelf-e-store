@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes } from "react";
-import { clsx } from "clsx";
+import { cn } from "../cn";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -10,11 +10,11 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 export function Input({ label, error, helperText, className, ...props }: InputProps) {
   return (
     <label className="flex flex-col gap-2 text-sm text-[var(--color-brown-800)]">
-      <span className="font-medium">{label}</span>
+      <span className="font-medium tracking-[0.02em]">{label}</span>
       <input
-        className={clsx(
-          "rounded-xl border border-[var(--color-brown-200)] bg-[var(--color-cream)] px-4 py-3 outline-none transition focus:border-transparent focus:ring-2 focus:ring-[var(--color-caramel-400)]",
-          error && "border-[var(--color-rose-400)] focus:ring-[var(--color-rose-400)]",
+        className={cn(
+          "flex h-12 w-full rounded-2xl border border-[var(--color-brown-100)] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(16,24,40,0.03)] outline-none transition focus:border-[var(--color-caramel-300)] focus:ring-4 focus:ring-[rgba(224,153,58,0.12)]",
+          error && "border-[var(--color-rose-400)] focus:border-[var(--color-rose-400)] focus:ring-[rgba(201,125,114,0.12)]",
           className,
         )}
         {...props}
