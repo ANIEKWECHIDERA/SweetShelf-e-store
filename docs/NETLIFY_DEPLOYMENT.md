@@ -31,11 +31,12 @@ If Netlify is already configured and failing, check these UI settings:
 
 - Build command: `npm run build:storefront`
 - Publish directory: `apps/storefront-web/.next`
-- Package directory: leave blank unless you intentionally want app-level config
+- Package directory: preferably leave blank for this monorepo demo deploy; if it is set to `apps/storefront-web`, Netlify will read the app-level `netlify.toml` instead of the root one.
 - Base directory: repository root
 - Node version: `22`
 - Do not use build commands that delete `node_modules` or `package-lock.json`; Netlify already installs dependencies before running the build command.
 - Do not use `next build --no-turbo`; Next.js 16 supports `next build`, `next build --turbo`, and `next build --webpack`, but not `--no-turbo`.
+- If the build fails with `Cannot find module '../lightningcss.linux-x64-gnu.node'`, make sure the latest lockfile is deployed. The repo now pins `lightningcss` at the workspace root and records the Linux native optional package so Netlify can install the CSS binary needed by Tailwind/Next builds.
 
 ## Admin Demo Site
 
