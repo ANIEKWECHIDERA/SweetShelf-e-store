@@ -37,6 +37,8 @@ If Netlify is already configured and failing, check these UI settings:
 - Do not use build commands that delete `node_modules` or `package-lock.json`; Netlify already installs dependencies before running the build command.
 - Do not use `next build --no-turbo`; Next.js 16 supports `next build`, `next build --turbo`, and `next build --webpack`, but not `--no-turbo`.
 - If the build fails with `Cannot find module '../lightningcss.linux-x64-gnu.node'`, make sure the latest lockfile is deployed. The repo now pins `lightningcss` at the workspace root and records the Linux native optional package so Netlify can install the CSS binary needed by Tailwind/Next builds.
+- If the build fails with `Cannot find module '@tailwindcss/oxide-linux-x64-gnu'`, make sure the latest lockfile is deployed. The repo now records Tailwind Oxide's Linux native optional package for both Next apps so Netlify can install the Tailwind 4 CSS engine binary.
+- The deploy log may show an old UI-installed `@netlify/plugin-nextjs` version. If it does, update it from Netlify's plugin UI or remove the UI-installed plugin and let Netlify's current Next.js runtime detection handle the app.
 
 ## Admin Demo Site
 

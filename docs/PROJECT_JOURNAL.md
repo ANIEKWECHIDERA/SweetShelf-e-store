@@ -71,6 +71,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Captured the current `npm audit` finding in the Netlify deployment guide: the remaining high/critical warnings come through the local `localtunnel` preview helper and should be handled deliberately rather than force-fixed before a production security handoff.
 - Fixed the Netlify deploy failure by removing the unsupported Next 16 `next build --no-turbo` flag, replacing the destructive Netlify install command with the root workspace build scripts, pinning app-level Netlify configs to Node `22`, and making app-level publish paths explicit for monorepo deploys.
 - Hardened the Netlify Linux build after a Lightning CSS native-binary failure by pinning `lightningcss` at the workspace root, locking the `lightningcss-linux-x64-gnu` optional package for the Next apps, and documenting the package-directory setting that can make Netlify prefer app-level config.
+- Hardened the Netlify Tailwind 4 build after an Oxide native-binary failure by locking `@tailwindcss/oxide-linux-x64-gnu` for both Next apps and documenting the old UI-installed Netlify Next plugin warning shown in deploy logs.
 
 ## Commands Used For Verification
 - `npm install`
