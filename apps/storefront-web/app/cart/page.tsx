@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import {
   Button,
   Card,
@@ -16,16 +17,35 @@ import { formatCurrency } from "@sweetshelf/shared-types";
 import { getCartTotals, useCartStore } from "@/lib/cart-store";
 
 export default function CartPage() {
+  const router = useRouter();
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const clear = useCartStore((state) => state.clear);
   const totals = getCartTotals(items);
 
+  function handleBack() {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/browse-menu");
+  }
+
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:gap-6 lg:px-8 lg:py-6">
       <div className="flex flex-wrap items-end justify-between gap-4 sm:gap-5 lg:gap-6">
         <div>
+          <Button
+            type="button"
+            variant="ghost"
+            className="-ml-3 mb-3"
+            onClick={handleBack}
+          >
+            <ArrowLeft className="size-4" />
+            Back
+          </Button>
           <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
             Cart
           </p>
@@ -33,43 +53,46 @@ export default function CartPage() {
             Review your order before checkout.
           </h1>
         </div>
-        {/* {items.length > 0 ? (
+        {items.length > 0 ? (
           <Button variant="ghost" onClick={() => clear()}>
             Clear cart
           </Button>
-        ) : null} */}
+        ) : null}
       </div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_360px] lg:gap-6">
         <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-          <div className="grid grid-cols-[80px_1fr_1fr_64px] overflow-hidden rounded-[18px] bg-[#0d9447] text-white shadow-[0_18px_45px_rgba(13,148,71,0.22)]">
-            <div className="flex items-center justify-center border-r border-white/15 px-3 py-4">
-              <ShoppingBag className="size-8" />
+          {items.length > 0 ? (
+            <div className="grid grid-cols-[80px_1fr_1fr_64px] overflow-hidden rounded-[18px] bg-[#0d9447] text-white shadow-[0_18px_45px_rgba(13,148,71,0.22)]">
+              <div className="flex items-center justify-center border-r border-white/15 px-3 py-4">
+                <ShoppingBag className="size-8" />
+              </div>
+              <div className="flex flex-col justify-center border-r border-white/15 px-4 py-4">
+                <span className="text-xs uppercase tracking-[0.2em] text-white/68">
+                  Items
+                </span>
+                <span className="text-lg font-semibold">
+                  {totals.itemCount}
+                </span>
+              </div>
+              <div className="flex flex-col justify-center border-r border-white/15 px-4 py-4">
+                <span className="text-xs uppercase tracking-[0.2em] text-white/68">
+                  Cart Total
+                </span>
+                <span className="text-lg font-semibold">
+                  {formatCurrency(totals.total)}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="flex min-h-10 items-center justify-center transition hover:bg-white/10"
+                aria-label="Clear cart from summary strip"
+                onClick={() => clear()}
+              >
+                <X className="size-6" />
+              </button>
             </div>
-            <div className="flex flex-col justify-center border-r border-white/15 px-4 py-4">
-              <span className="text-xs uppercase tracking-[0.2em] text-white/68">
-                Items
-              </span>
-              <span className="text-lg font-semibold">{totals.itemCount}</span>
-            </div>
-            <div className="flex flex-col justify-center border-r border-white/15 px-4 py-4">
-              <span className="text-xs uppercase tracking-[0.2em] text-white/68">
-                Cart Total
-              </span>
-              <span className="text-lg font-semibold">
-                {formatCurrency(totals.total)}
-              </span>
-            </div>
-            <button
-              type="button"
-              className="flex min-h-10 items-center justify-center transition hover:bg-white/10"
-              aria-label="Clear cart from summary strip"
-              onClick={() => clear()}
-              disabled={items.length === 0}
-            >
-              <X className="size-6" />
-            </button>
-          </div>
+          ) : null}
 
           <Card className="border-0">
             <CardContent className="p-3 sm:p-4 lg:p-5 border-[var(--color-brown-100)]">
@@ -82,9 +105,9 @@ export default function CartPage() {
                     Add pastries from the storefront, then come back here to
                     adjust quantities or remove anything before paying.
                   </p>
-                  <Link href="/">
-                    <Button>Browse products</Button>
-                  </Link>
+                  <Button type="button" onClick={handleBack}>
+                    Keep Shopping
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-4 sm:space-y-5 lg:space-y-6 ">
@@ -113,24 +136,32 @@ export default function CartPage() {
                           </p>
                           <div className="mt-4 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2 rounded-full bg-[var(--color-caramel-50)] p-1">
-                              <Button
-                                type="button"
-                                className="flex size-10 items-center justify-center rounded-full bg-white"
-                                onClick={() =>
-                                  updateQuantity(
-                                    item.productId,
-                                    item.quantity - 1,
-                                  )
-                                }
-                              >
-                                <Minus className="size-4" />
-                              </Button>
+                              {item.quantity > 1 ? (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon"
+                                  className="size-10 bg-white text-[var(--color-brown-900)]"
+                                  aria-label={`Decrease ${item.name} quantity`}
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.productId,
+                                      item.quantity - 1,
+                                    )
+                                  }
+                                >
+                                  <Minus className="size-4" />
+                                </Button>
+                              ) : null}
                               <span className="min-w-10 text-center text-sm font-semibold sm:text-base">
                                 {item.quantity}
                               </span>
                               <Button
                                 type="button"
-                                className="flex size-10 items-center justify-center rounded-full bg-white"
+                                variant="outline"
+                                size="icon"
+                                className="size-10 bg-white text-[var(--color-brown-900)]"
+                                aria-label={`Increase ${item.name} quantity`}
                                 onClick={() =>
                                   updateQuantity(
                                     item.productId,
@@ -168,45 +199,48 @@ export default function CartPage() {
           </Card>
         </div>
 
-        <Card className="h-fit border-[var(--color-brown-100)] bg-white">
-          <CardHeader>
-            <CardDescription>Order summary</CardDescription>
-            <CardTitle>{totals.itemCount} items</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 sm:space-y-5 lg:space-y-6">
-            <div className="flex items-center justify-between text-sm sm:text-base">
-              <span className="text-[var(--color-muted)]">Subtotal</span>
-              <span className="font-semibold text-[var(--color-brown-900)]">
-                {formatCurrency(totals.total)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-sm sm:text-base">
-              <span className="text-[var(--color-muted)]">Delivery</span>
-              <span className="font-semibold text-[var(--color-brown-900)]">
-                Calculated at checkout
-              </span>
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium sm:text-base">
-                Estimated total
-              </span>
-              <span className="text-xl font-semibold text-[var(--color-caramel-500)]">
-                {formatCurrency(totals.total)}
-              </span>
-            </div>
-            <Link href="/checkout" className="mb-5 mt-2 block">
-              <Button fullWidth disabled={items.length === 0}>
-                Continue to Checkout
-              </Button>
-            </Link>
-            <Link href="/" className="mb-5 mt-2 block">
-              <Button variant="outline" fullWidth>
+        {items.length > 0 ? (
+          <Card className="h-fit border-[var(--color-brown-100)] bg-white">
+            <CardHeader>
+              <CardDescription>Order summary</CardDescription>
+              <CardTitle>{totals.itemCount} items</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 sm:space-y-5 lg:space-y-6">
+              <div className="flex items-center justify-between text-sm sm:text-base">
+                <span className="text-[var(--color-muted)]">Subtotal</span>
+                <span className="font-semibold text-[var(--color-brown-900)]">
+                  {formatCurrency(totals.total)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm sm:text-base">
+                <span className="text-[var(--color-muted)]">Delivery</span>
+                <span className="font-semibold text-[var(--color-brown-900)]">
+                  Calculated at checkout
+                </span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium sm:text-base">
+                  Estimated total
+                </span>
+                <span className="text-xl font-semibold text-[var(--color-caramel-500)]">
+                  {formatCurrency(totals.total)}
+                </span>
+              </div>
+              <Link href="/checkout" className="mb-5 mt-2 block">
+                <Button fullWidth>Continue to Checkout</Button>
+              </Link>
+              <Button
+                type="button"
+                variant="outline"
+                fullWidth
+                onClick={handleBack}
+              >
                 Keep Shopping
               </Button>
-            </Link>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
     </main>
   );

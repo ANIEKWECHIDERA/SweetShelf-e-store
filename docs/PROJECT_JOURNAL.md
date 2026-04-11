@@ -74,6 +74,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Hardened the Netlify Tailwind 4 build after an Oxide native-binary failure by locking `@tailwindcss/oxide-linux-x64-gnu` for both Next apps and documenting the old UI-installed Netlify Next plugin warning shown in deploy logs.
 - Removed SPA-style `_redirects` fallbacks from the storefront and admin public folders after the Netlify deploy served a 404 from `/`; Next.js on Netlify should let the Next runtime own route handling instead of rewriting every path to `/index.html`.
 - Added phone-only cart access to the storefront shell: a compact cart icon with item count beside the mobile menu button, a cart row inside the phone dropdown menu, and a floating cart-total pill that appears only after products have been added.
+- Updated cart and checkout flows across all screen sizes: Back/Keep Shopping now returns to the previous page with a browse fallback, empty carts no longer show order-summary panels, checkout now mirrors the cart-page product-card summary design, and quantity controls show visible plus/minus affordances with minus hidden at quantity one.
 
 ## Commands Used For Verification
 - `npm install`
