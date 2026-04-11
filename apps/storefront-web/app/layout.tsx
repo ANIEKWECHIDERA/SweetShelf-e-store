@@ -2,6 +2,7 @@ import { MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { getWhatsAppHref } from "@sweetshelf/shared-types";
+import { CartStoreSync } from "@/components/cart-store-sync";
 import "./globals.css";
 
 const sans = DM_Sans({
@@ -34,6 +35,7 @@ export default function RootLayout({
     >
       <body className="h-screen overflow-hidden bg-[var(--color-cream)] font-sans text-[var(--color-brown-800)]">
         <div className="flex h-full flex-col">
+          <CartStoreSync />
           <div className="flex-1 overflow-y-auto overflow-x-hidden">
             {children}
           </div>

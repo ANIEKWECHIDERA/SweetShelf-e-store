@@ -90,11 +90,20 @@ export const cartLineSchema = z.object({
 });
 
 export const checkoutRequestSchema = z.object({
-  customerName: z.string().min(2),
+  customerName: z.string().trim().min(2, "Enter your full name"),
   customerEmail: z.email().optional().or(z.literal("")),
-  customerPhone: z.string().optional(),
+  customerPhone: z
+    .string()
+    .trim()
+    .regex(/^\+?[0-9][0-9\s().-]{7,18}$/, "Enter a valid phone number"),
   deliveryType: deliveryTypeSchema,
-  deliveryAddress: z.string().optional(),
+  deliveryAddress: z
+    .string()
+    .trim()
+    .min(10, "Enter a complete delivery address")
+    .refine((value) => /\d|street|road|close|avenue|lane|estate|lekki|lagos/i.test(value), {
+      message: "Add a street, house number, estate, or area so dispatch can find you",
+    }),
   notes: z.string().optional(),
   storeId: z.string().min(1),
   cartItems: z.array(cartLineSchema).min(1),

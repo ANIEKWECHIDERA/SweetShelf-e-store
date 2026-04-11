@@ -40,10 +40,10 @@ export default function CartPage() {
           <Button
             type="button"
             variant="ghost"
-            className="-ml-3 mb-3"
+            className="-ml-3 mb-3 text-[var(--color-brown-900)] hover:underline sm:mb-4"
             onClick={handleBack}
           >
-            <ArrowLeft className="size-4" />
+            <ArrowLeft className="size-4 text-[var(--color-brown-900)]" />
             Back
           </Button>
           <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
@@ -53,11 +53,6 @@ export default function CartPage() {
             Review your order before checkout.
           </h1>
         </div>
-        {items.length > 0 ? (
-          <Button variant="ghost" onClick={() => clear()}>
-            Clear cart
-          </Button>
-        ) : null}
       </div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_360px] lg:gap-6">
@@ -200,10 +195,10 @@ export default function CartPage() {
         </div>
 
         {items.length > 0 ? (
-          <Card className="h-fit border-[var(--color-brown-100)] bg-white">
+          <Card className="h-fit border-[var(--color-brown-100)] bg-white py-4 shadow-[0_12px_32px_rgba(16,24,40,0.06)] sm:p-5 lg:py-6">
             <CardHeader>
               <CardDescription>Order summary</CardDescription>
-              <CardTitle>{totals.itemCount} items</CardTitle>
+              <CardTitle>{`${totals.itemCount} ${totals.itemCount === 1 ? "item" : "items"}`}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-5 lg:space-y-6">
               <div className="flex items-center justify-between text-sm sm:text-base">

@@ -76,6 +76,10 @@ export const useCartStore = create<CartStore>()(
   ),
 );
 
+export function rehydrateCartStore() {
+  void useCartStore.persist.rehydrate();
+}
+
 export function getCartTotals(items: CartItem[]) {
   return items.reduce(
     (acc, item) => {
