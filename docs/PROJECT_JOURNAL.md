@@ -73,6 +73,7 @@ This document tracks what was built, how it was built, and the decisions made th
 - Hardened the Netlify Linux build after a Lightning CSS native-binary failure by pinning `lightningcss` at the workspace root, locking the `lightningcss-linux-x64-gnu` optional package for the Next apps, and documenting the package-directory setting that can make Netlify prefer app-level config.
 - Hardened the Netlify Tailwind 4 build after an Oxide native-binary failure by locking `@tailwindcss/oxide-linux-x64-gnu` for both Next apps and documenting the old UI-installed Netlify Next plugin warning shown in deploy logs.
 - Removed SPA-style `_redirects` fallbacks from the storefront and admin public folders after the Netlify deploy served a 404 from `/`; Next.js on Netlify should let the Next runtime own route handling instead of rewriting every path to `/index.html`.
+- Added phone-only cart access to the storefront shell: a compact cart icon with item count beside the mobile menu button, a cart row inside the phone dropdown menu, and a floating cart-total pill that appears only after products have been added.
 
 ## Commands Used For Verification
 - `npm install`

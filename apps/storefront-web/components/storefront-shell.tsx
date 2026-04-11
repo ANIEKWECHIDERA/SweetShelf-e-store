@@ -641,7 +641,10 @@ export function StorefrontShell({
   function renderPageContent() {
     if (mode === "browse") {
       return (
-        <section ref={browseListRef} className="space-y-4 sm:space-y-5 lg:space-y-6">
+        <section
+          ref={browseListRef}
+          className="space-y-4 sm:space-y-5 lg:space-y-6"
+        >
           <div className="space-y-3">
             <Badge variant="secondary">Browse Menu</Badge>
             <h1 className="font-serif text-xl text-[var(--color-brown-900)] sm:text-2xl lg:text-3xl">
@@ -688,7 +691,10 @@ export function StorefrontShell({
 
     if (mode === "offers") {
       return (
-        <section ref={offersListRef} className="space-y-4 sm:space-y-5 lg:space-y-6">
+        <section
+          ref={offersListRef}
+          className="space-y-4 sm:space-y-5 lg:space-y-6"
+        >
           <div className="space-y-3">
             <Badge variant="warning">Special Offers</Badge>
             <h1 className="font-serif text-xl text-[var(--color-brown-900)] sm:text-2xl lg:text-3xl">
@@ -764,7 +770,7 @@ export function StorefrontShell({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                     <div className="rounded-[14px] bg-[var(--color-brown-50)] p-4">
                       <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
                         Status
@@ -790,7 +796,7 @@ export function StorefrontShell({
                       </p>
                     </div>
                   </div>
-                    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+                  <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                     {trackedOrder.items.map((item) => (
                       <div
                         key={item.id}
@@ -1106,7 +1112,7 @@ export function StorefrontShell({
 
             {customerProfile ? (
               <Link href="/account/orders">
-            <div className="flex min-h-10 items-center gap-3 rounded-[14px] border border-[var(--color-brown-100)] bg-[var(--color-caramel-50)] px-3 py-2 text-sm text-[var(--color-brown-900)] sm:text-base">
+                <div className="flex min-h-10 items-center gap-3 rounded-[14px] border border-[var(--color-brown-100)] bg-[var(--color-caramel-50)] px-3 py-2 text-sm text-[var(--color-brown-900)] sm:text-base">
                   <div className="flex size-9 items-center justify-center rounded-[12px] bg-white">
                     <UserRound className="size-4" />
                   </div>
@@ -1123,22 +1129,37 @@ export function StorefrontShell({
             )}
           </div>
 
-          <button
-            type="button"
-            aria-label={
-              isMobileMenuOpen
-                ? "Close navigation menu"
-                : "Open navigation menu"
-            }
-            className="inline-flex size-11 items-center justify-center rounded-[14px] border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] lg:hidden"
-            onClick={() => setIsMobileMenuOpen((current) => !current)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="size-5" />
-            ) : (
-              <Menu className="size-5" />
-            )}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href="/cart"
+              className="relative inline-flex size-11 items-center justify-center rounded-[14px] border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)] shadow-[0_8px_24px_rgba(16,24,40,0.06)] sm:hidden"
+              aria-label={`Open cart with ${cartTotals.itemCount} selected items`}
+            >
+              <ShoppingBag className="size-5" />
+              {cartTotals.itemCount > 0 ? (
+                <span className="absolute -right-1.5 -top-1.5 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#0d9447] px-1 text-[11px] font-bold leading-none text-white shadow-[0_6px_16px_rgba(13,148,71,0.28)]">
+                  {cartTotals.itemCount}
+                </span>
+              ) : null}
+            </Link>
+
+            <button
+              type="button"
+              aria-label={
+                isMobileMenuOpen
+                  ? "Close navigation menu"
+                  : "Open navigation menu"
+              }
+              className="inline-flex size-11 items-center justify-center rounded-[14px] border border-[var(--color-brown-100)] bg-white text-[var(--color-brown-900)]"
+              onClick={() => setIsMobileMenuOpen((current) => !current)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="size-5" />
+              ) : (
+                <Menu className="size-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>
@@ -1165,6 +1186,27 @@ export function StorefrontShell({
                       {item.label}
                     </Link>
                   ))}
+                  {/* <Link
+                    href="/cart"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`rounded-[14px] px-4 py-3 text-sm font-medium transition sm:hidden ${
+                      matchesPath(pathname, "/cart")
+                        ? "bg-[var(--color-brown-900)] text-white"
+                        : "bg-[var(--color-cream)] text-[var(--color-brown-800)]"
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="inline-flex items-center gap-2">
+                        <ShoppingBag className="size-4" />
+                        Cart
+                      </span>
+                      {cartTotals.itemCount > 0 ? (
+                        <span className="rounded-full bg-[#0d9447] px-2 py-1 text-xs font-semibold text-white">
+                          {cartTotals.itemCount}
+                        </span>
+                      ) : null}
+                    </span>
+                  </Link> */}
                 </div>
               </div>
             </motion.div>
@@ -1173,6 +1215,26 @@ export function StorefrontShell({
       </header>
 
       {renderPageContent()}
+
+      <AnimatePresence>
+        {cartTotals.itemCount > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            className="fixed bottom-20 right-4 z-40 sm:hidden"
+          >
+            <Link
+              href="/cart"
+              className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#0d9447] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(13,148,71,0.34)]"
+              aria-label={`Open cart totaling ${formatCurrency(cartTotals.total)}`}
+            >
+              <ShoppingBag className="size-5" />
+              <span>{formatCurrency(cartTotals.total)}</span>
+            </Link>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <Card className="border-0 bg-[linear-gradient(135deg,#fff6e8_0%,#fff 100%)]">
         <CardHeader>

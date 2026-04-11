@@ -33,11 +33,11 @@ export default function CartPage() {
             Review your order before checkout.
           </h1>
         </div>
-        {items.length > 0 ? (
+        {/* {items.length > 0 ? (
           <Button variant="ghost" onClick={() => clear()}>
             Clear cart
           </Button>
-        ) : null}
+        ) : null} */}
       </div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_360px] lg:gap-6">
